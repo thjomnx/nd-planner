@@ -1,0 +1,7 @@
+/bin
+/build
+/prototyping
+
+Makefile*
+
+*.kdev4*

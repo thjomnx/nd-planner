@@ -1,0 +1,27 @@
+'nd-planner' oughts to be little tool for flight planning based on AIRAC data.
+
+
+-----------------
+ BUILDING
+--------------------
+
+Build on Linux (i686/x64):
+
+$ qmake
+$ make
+
+---
+
+Build on Windows 7 (x64):
+
+> PATH=C:\QtSDK\mingw\bin;C:\QtSDK\Desktop\Qt\4.8.0\mingw\bin   (or whatever points to qmake and mingw32-make)
+
+> qmake
+> mingw32-make
+
+
+-----------------
+ CONTACT
+--------------------
+
+Markus Enax <Markus.Enax@gmail.com>
