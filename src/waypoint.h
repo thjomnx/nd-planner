@@ -15,18 +15,25 @@
  *    along with 'nd-planner'. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QApplication>
+#ifndef WAYPOINT_H
+#define WAYPOINT_H
 
-#include "mainwindow.h"
+#include <QObject>
 
-int main(int argc, char *argv[])
+#include "fix.h"
+
+class Waypoint : public Fix
 {
-    QApplication app(argc, argv);
+    Q_OBJECT
 
-    MainWindow win;
-    win.show();
+public:
+    explicit Waypoint(QString identifier, qreal latitude, qreal longitude);
+    ~Waypoint();
 
-    int exitCode = app.exec();
+    QString identifier() const { return m_identifier; }
 
-    return exitCode;
-}
+private:
+    QString m_identifier;
+};
+
+#endif // WAYPOINT_H

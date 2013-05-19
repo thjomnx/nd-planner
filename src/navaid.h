@@ -15,18 +15,29 @@
  *    along with 'nd-planner'. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QApplication>
+#ifndef NAVAID_H
+#define NAVAID_H
 
-#include "mainwindow.h"
+#include <QObject>
 
-int main(int argc, char *argv[])
+#include "fix.h"
+
+class Navaid : public Fix
 {
-    QApplication app(argc, argv);
+    Q_OBJECT
 
-    MainWindow win;
-    win.show();
+public:
+    explicit Navaid(QString identifier, QString name, qreal frequency, qreal latitude, qreal longitude);
+    ~Navaid();
 
-    int exitCode = app.exec();
+    QString identifier() const { return m_identifier; }
+    QString name() const { return m_name; }
+    qreal frequency() const { return m_frequency; }
 
-    return exitCode;
-}
+private:
+    QString m_identifier;
+    QString m_name;
+    qreal m_frequency;
+};
+
+#endif // NAVAID_H

@@ -15,18 +15,29 @@
  *    along with 'nd-planner'. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QApplication>
+#ifndef AIRPORT_H
+#define AIRPORT_H
 
-#include "mainwindow.h"
+#include <QObject>
 
-int main(int argc, char *argv[])
+#include "fix.h"
+
+class Airport : public Fix
 {
-    QApplication app(argc, argv);
+    Q_OBJECT
 
-    MainWindow win;
-    win.show();
+public:
+    explicit Airport(QString identifier, QString name, qreal latitude, qreal longitude, qint32 elevation);
+    ~Airport();
 
-    int exitCode = app.exec();
+    QString identifier() const { return m_identifier; }
+    QString name() const { return m_name; }
+    qint32 elevation() const { return m_elevation; }
 
-    return exitCode;
-}
+private:
+    QString m_identifier;
+    QString m_name;
+    qint32 m_elevation;
+};
+
+#endif // AIRPORT_H

@@ -1,37 +1,31 @@
 /*
- * This file is part of 'telamon'.
+ * This file is part of 'nd-planner'.
  *
- *    'telamon' is free software: you can redistribute it and/or modify
+ *    'nd-planner' is free software: you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
  *    the Free Software Foundation, either version 3 of the License, or
  *    (at your option) any later version.
  *
- *    'telamon' is distributed in the hope that it will be useful,
+ *    'nd-planner' is distributed in the hope that it will be useful,
  *    but WITHOUT ANY WARRANTY; without even the implied warranty of
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *    GNU General Public License for more details.
  *
  *    You should have received a copy of the GNU General Public License
- *    along with 'telamon'. If not, see <http://www.gnu.org/licenses/>.
+ *    along with 'nd-planner'. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QtWidgets>
+#include "leg.h"
 
-#include "mappanel.h"
-
-MapPanel::MapPanel(QWidget *parent)
-    : QDockWidget(parent)
+Leg::Leg(Fix *start, Fix *end, qreal distance) : QObject()
 {
-    setupUi(this);
-
-    makeConnections();
-    updateUi();
+    m_start = start;
+    m_end = end;
+    m_distance = distance;
 }
 
-void MapPanel::updateUi()
+Leg::~Leg()
 {
-}
-
-void MapPanel::makeConnections()
-{
+    delete m_start;
+    delete m_end;
 }

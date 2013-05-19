@@ -15,18 +15,16 @@
  *    along with 'nd-planner'. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QApplication>
+#include "airport.h"
 
-#include "mainwindow.h"
-
-int main(int argc, char *argv[])
+Airport::Airport(QString identifier, QString name, qreal latitude, qreal longitude, qint32 elevation)
+    : Fix(latitude, longitude)
 {
-    QApplication app(argc, argv);
+    m_identifier = identifier;
+    m_name = name;
+    m_elevation = elevation;
+}
 
-    MainWindow win;
-    win.show();
-
-    int exitCode = app.exec();
-
-    return exitCode;
+Airport::~Airport()
+{
 }

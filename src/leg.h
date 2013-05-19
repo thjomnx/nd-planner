@@ -15,18 +15,29 @@
  *    along with 'nd-planner'. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QApplication>
+#ifndef LEG_H
+#define LEG_H
 
-#include "mainwindow.h"
+#include <QObject>
 
-int main(int argc, char *argv[])
+#include "fix.h"
+
+class Leg : public QObject
 {
-    QApplication app(argc, argv);
+    Q_OBJECT
 
-    MainWindow win;
-    win.show();
+public:
+    explicit Leg(Fix *start, Fix *end, qreal distance);
+    ~Leg();
 
-    int exitCode = app.exec();
+    Fix* start() const { return m_start; }
+    Fix* end() const { return m_end; }
+    qreal distance() const { return m_distance; }
 
-    return exitCode;
-}
+private:
+    Fix *m_start;
+    Fix *m_end;
+    qreal m_distance;
+};
+
+#endif // LEG_H

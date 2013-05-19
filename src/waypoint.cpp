@@ -15,18 +15,14 @@
  *    along with 'nd-planner'. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QApplication>
+#include "waypoint.h"
 
-#include "mainwindow.h"
-
-int main(int argc, char *argv[])
+Waypoint::Waypoint(QString identifier, qreal latitude, qreal longitude)
+    : Fix(latitude, longitude)
 {
-    QApplication app(argc, argv);
+    m_identifier = identifier;
+}
 
-    MainWindow win;
-    win.show();
-
-    int exitCode = app.exec();
-
-    return exitCode;
+Waypoint::~Waypoint()
+{
 }

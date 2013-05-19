@@ -15,18 +15,26 @@
  *    along with 'nd-planner'. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QApplication>
+#include "fix.h"
 
-#include "mainwindow.h"
-
-int main(int argc, char *argv[])
+Fix::Fix() : QObject()
 {
-    QApplication app(argc, argv);
+    m_latitude = 0.0;
+    m_longitude = 0.0;
+}
 
-    MainWindow win;
-    win.show();
+Fix::Fix(const Fix &other) : QObject()
+{
+    m_latitude = other.latitude();
+    m_longitude = other.longitude();
+}
 
-    int exitCode = app.exec();
+Fix::Fix(qreal latitude, qreal longitude) : QObject()
+{
+    m_latitude = latitude;
+    m_longitude = longitude;
+}
 
-    return exitCode;
+Fix::~Fix()
+{
 }

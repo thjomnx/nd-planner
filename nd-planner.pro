@@ -21,4 +21,4 @@
 
 # Sub projects
 TEMPLATE = subdirs
-SUBDIRS = src
+SUBDIRS = ext/qmapcontrol src

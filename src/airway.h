@@ -15,18 +15,33 @@
  *    along with 'nd-planner'. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QApplication>
+#ifndef AIRWAY_H
+#define AIRWAY_H
 
-#include "mainwindow.h"
+#include <QObject>
 
-int main(int argc, char *argv[])
+class Fix;
+class Leg;
+
+class Airway : public QObject
 {
-    QApplication app(argc, argv);
+    Q_OBJECT
 
-    MainWindow win;
-    win.show();
+public:
+    explicit Airway(QString &identifier);
+    explicit Airway(const Airway &other);
+    ~Airway();
 
-    int exitCode = app.exec();
+    QString identifier() const { return m_identifier; }
+    QList<Leg*> legs() const { return m_legs; }
+    Fix* start() const;
+    Fix* end() const;
 
-    return exitCode;
-}
+    void appendLeg(Leg *leg);
+
+private:
+    QString m_identifier;
+    QList<Leg*> m_legs;
+};
+
+#endif // AIRWAY_H

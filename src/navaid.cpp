@@ -15,18 +15,16 @@
  *    along with 'nd-planner'. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QApplication>
+#include "navaid.h"
 
-#include "mainwindow.h"
-
-int main(int argc, char *argv[])
+Navaid::Navaid(QString identifier, QString name, qreal frequency, qreal latitude, qreal longitude)
+    : Fix(latitude, longitude)
 {
-    QApplication app(argc, argv);
+    m_identifier = identifier;
+    m_name = name;
+    m_frequency = frequency;
+}
 
-    MainWindow win;
-    win.show();
-
-    int exitCode = app.exec();
-
-    return exitCode;
+Navaid::~Navaid()
+{
 }
