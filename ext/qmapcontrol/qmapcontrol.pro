@@ -5,6 +5,7 @@ name = qmapcontrol
 TARGET = $${name}
 TEMPLATE = lib
 DESTDIR = ../../lib
+VERSION = 0.9.5.2
 
 # Qt settings
 QT += core network widgets
