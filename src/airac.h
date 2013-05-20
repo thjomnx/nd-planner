@@ -37,6 +37,8 @@ public:
     Airac();
     ~Airac();
 
+    static QString buildKey(const QString &identifier, const qreal latitude, const qreal longitude);
+
     QFile* file() const { return m_path; }
 
     QList<Airport*> airports() const { return m_airports; }
@@ -52,14 +54,6 @@ private:
     void loadNavaids(const QString &path);
     void loadWaypoints(const QString &path);
     void loadAirways(const QString &path);
-
-    Airport* loadAirport(const QString &line);
-    Navaid* loadNavaid(const QString &line);
-    Waypoint* loadWaypoint(const QString &line);
-    Airway* loadAirway(const QString &line);
-    Leg* loadLeg(const QString &line);
-
-    QString buildKey(const QString &identifier, const qreal latitude, const qreal longitude) const;
 
     QFile *m_path;
 

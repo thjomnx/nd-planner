@@ -30,6 +30,8 @@ public:
     explicit Navaid(QString identifier, QString name, qreal frequency, qreal latitude, qreal longitude);
     ~Navaid();
 
+    static Navaid* parse(const QString &line);
+    
     QString identifier() const { return m_identifier; }
     QString name() const { return m_name; }
     qreal frequency() const { return m_frequency; }

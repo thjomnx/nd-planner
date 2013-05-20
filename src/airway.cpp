@@ -15,37 +15,66 @@
  *    along with 'nd-planner'. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <QStringList>
+
 #include "airway.h"
 #include "leg.h"
+
+#define AIRWAY_ID_IDX      1
 
 Airway::Airway(QString &identifier) : QObject()
 {
     m_identifier = identifier;
+    m_type = parseType(identifier);
 }
 
 Airway::Airway(const Airway &other) : QObject()
 {
     m_identifier = other.identifier();
     m_legs = other.legs();
+    m_type = parseType(other.identifier());
 }
 
 Airway::~Airway()
 {
 }
 
-Fix *Airway::start() const
+Airway* Airway::parse(const QString &line)
 {
-    // TODO
-    return 0;
+    QStringList tokenList = line.split(',');
+
+    QString identifier = tokenList[1];
+
+    return new Airway(identifier);
 }
 
-Fix *Airway::end() const
+Fix* Airway::start() const
 {
-    // TODO
-    return 0;
+    return (m_legs.first() != 0) ? m_legs.first()->start() : 0;
+}
+
+Fix* Airway::end() const
+{
+    return (m_legs.last() != 0) ? m_legs.last()->end() : 0;
 }
 
 void Airway::appendLeg(Leg *leg)
 {
     m_legs.append(leg);
+}
+
+Airway::AirwayType Airway::parseType(const QString &identifier)
+{
+    AirwayType type = UnknownType;
+
+    if (identifier.startsWith('Q') || identifier.startsWith('U'))
+    {
+        type = HighAltitudeType;
+    }
+    else if (identifier.startsWith('T') || identifier.startsWith('V'))
+    {
+        type = LowAltitudeType;
+    }
+
+    return type;
 }

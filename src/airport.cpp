@@ -15,7 +15,15 @@
  *    along with 'nd-planner'. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <QStringList>
+
 #include "airport.h"
+
+#define AIRPORT_ID_IDX      1
+#define AIRPORT_NAME_IDX    2
+#define AIRPORT_LAT_IDX     3
+#define AIRPORT_LON_IDX     4
+#define AIRPORT_ELEV_IDX    5
 
 Airport::Airport(QString identifier, QString name, qreal latitude, qreal longitude, qint32 elevation)
     : Fix(latitude, longitude)
@@ -27,4 +35,17 @@ Airport::Airport(QString identifier, QString name, qreal latitude, qreal longitu
 
 Airport::~Airport()
 {
+}
+
+Airport* Airport::parse(const QString &line)
+{
+    QStringList tokenList = line.split(',');
+
+    QString identifier = tokenList[AIRPORT_ID_IDX];
+    QString name = tokenList[AIRPORT_NAME_IDX];
+    qreal latitude = tokenList[AIRPORT_LAT_IDX].toDouble();
+    qreal longitude = tokenList[AIRPORT_LON_IDX].toDouble();
+    qint32 elevation = tokenList[AIRPORT_ELEV_IDX].toInt();
+
+    return new Airport(identifier, name, latitude, longitude, elevation);
 }

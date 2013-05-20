@@ -16,7 +16,6 @@
  */
 
 #include <QDebug>
-#include <QStringList>
 #include <QTextStream>
 
 #include "airac.h"
@@ -33,6 +32,11 @@ Airac::Airac() : QObject()
 
 Airac::~Airac()
 {
+}
+
+QString Airac::buildKey(const QString &identifier, const qreal latitude, const qreal longitude)
+{
+    return QString("%1_%2_%3").arg(identifier).arg(latitude).arg(longitude);
 }
 
 void Airac::loadAirac(const QString &path)
@@ -65,7 +69,7 @@ void Airac::loadAiports(const QString &path)
 
         if (line.startsWith('A'))
         {
-            Airport *ap = loadAirport(line);
+            Airport *ap = Airport::parse(line);
 
             m_fixes.insert(buildKey(ap->identifier(), ap->latitude(), ap->longitude()), ap);
             m_airports.append(ap);
@@ -93,7 +97,7 @@ void Airac::loadNavaids(const QString &path)
     {
         QString line = in.readLine();
 
-        Navaid *nav = loadNavaid(line);
+        Navaid *nav = Navaid::parse(line);
 
         m_fixes.insert(buildKey(nav->identifier(), nav->latitude(), nav->longitude()), nav);
         m_navaids.append(nav);
@@ -120,7 +124,7 @@ void Airac::loadWaypoints(const QString &path)
     {
         QString line = in.readLine();
 
-        Waypoint *wp = loadWaypoint(line);
+        Waypoint *wp = Waypoint::parse(line);
 
         m_fixes.insert(buildKey(wp->identifier(), wp->latitude(), wp->longitude()), wp);
         m_waypoints.append(wp);
@@ -155,11 +159,11 @@ void Airac::loadAirways(const QString &path)
                 m_airways.append(awy);
             }
 
-            awy = loadAirway(line);
+            awy = Airway::parse(line);
         }
         else if (line.startsWith('S'))
         {
-            Leg *leg = loadLeg(line);
+            Leg *leg = Leg::parse(line, m_fixes);
 
             if (awy != 0)
             {
@@ -169,75 +173,4 @@ void Airac::loadAirways(const QString &path)
     }
 
     qDebug() << "Airways loaded";
-}
-
-Airport* Airac::loadAirport(const QString &line)
-{
-    QStringList tokenList = line.split(',');
-
-    QString identifier = tokenList[1];
-    QString name = tokenList[2];
-    qreal latitude = tokenList[3].toDouble();
-    qreal longitude = tokenList[4].toDouble();
-    qint32 elevation = tokenList[5].toInt();
-
-    return new Airport(identifier, name, latitude, longitude, elevation);
-}
-
-Navaid* Airac::loadNavaid(const QString &line)
-{
-    QStringList tokenList = line.split(',');
-
-    QString identifier = tokenList[0];
-    QString name = tokenList[1];
-    qreal frequency = tokenList[2].toDouble();
-    qreal latitude = tokenList[6].toDouble();
-    qreal longitude = tokenList[7].toDouble();
-
-    return new Navaid(identifier, name, frequency, latitude, longitude);
-}
-
-Waypoint* Airac::loadWaypoint(const QString &line)
-{
-    QStringList tokenList = line.split(',');
-
-    QString identifier = tokenList[0];
-    qreal latitude = tokenList[1].toDouble();
-    qreal longitude = tokenList[2].toDouble();
-
-    return new Waypoint(identifier, latitude, longitude);
-}
-
-Airway* Airac::loadAirway(const QString &line)
-{
-    QStringList tokenList = line.split(',');
-
-    QString identifier = tokenList[1];
-
-    return new Airway(identifier);
-}
-
-Leg* Airac::loadLeg(const QString &line)
-{
-    QStringList tokenList = line.split(',');
-
-    QString startId = tokenList[1];
-    qreal startLat = tokenList[2].toDouble();
-    qreal startLon = tokenList[3].toDouble();
-
-    QString endId = tokenList[4];
-    qreal endLat = tokenList[5].toDouble();
-    qreal endLon = tokenList[6].toDouble();
-
-    qreal distance = tokenList[9].toDouble();
-
-    Fix *start = m_fixes.value(buildKey(startId, startLat, startLon));
-    Fix *end = m_fixes.value(buildKey(endId, endLat, endLon));
-
-    return new Leg(start, end, distance);
-}
-
-QString Airac::buildKey(const QString &identifier, const qreal latitude, const qreal longitude) const
-{
-    return QString("%1_%2_%3").arg(identifier).arg(latitude).arg(longitude);
 }

@@ -15,7 +15,18 @@
  *    along with 'nd-planner'. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <QStringList>
+
 #include "leg.h"
+#include "airac.h"
+
+#define LEG_STARTID_IDX    1
+#define LEG_STARTLAT_IDX   2
+#define LEG_STARTLON_IDX   3
+#define LEG_ENDID_IDX      4
+#define LEG_ENDLAT_IDX     5
+#define LEG_ENDLON_IDX     6
+#define LEG_DIST_IDX       9
 
 Leg::Leg(Fix *start, Fix *end, qreal distance) : QObject()
 {
@@ -28,4 +39,24 @@ Leg::~Leg()
 {
     delete m_start;
     delete m_end;
+}
+
+Leg* Leg::parse(const QString &line, QHash<QString, Fix*> &fixes)
+{
+    QStringList tokenList = line.split(',');
+
+    QString startId = tokenList[LEG_STARTID_IDX];
+    qreal startLat = tokenList[LEG_STARTLAT_IDX].toDouble();
+    qreal startLon = tokenList[LEG_STARTLON_IDX].toDouble();
+
+    QString endId = tokenList[LEG_ENDID_IDX];
+    qreal endLat = tokenList[LEG_ENDLAT_IDX].toDouble();
+    qreal endLon = tokenList[LEG_ENDLON_IDX].toDouble();
+
+    qreal distance = tokenList[LEG_DIST_IDX].toDouble();
+
+    Fix *start = fixes.value(Airac::buildKey(startId, startLat, startLon));
+    Fix *end = fixes.value(Airac::buildKey(endId, endLat, endLon));
+
+    return new Leg(start, end, distance);
 }

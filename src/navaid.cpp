@@ -15,7 +15,15 @@
  *    along with 'nd-planner'. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <QStringList>
+
 #include "navaid.h"
+
+#define NAVAID_ID_IDX      0
+#define NAVAID_NAME_IDX    1
+#define NAVAID_FREQ_IDX    2
+#define NAVAID_LAT_IDX     6
+#define NAVAID_LON_IDX     7
 
 Navaid::Navaid(QString identifier, QString name, qreal frequency, qreal latitude, qreal longitude)
     : Fix(latitude, longitude)
@@ -27,4 +35,17 @@ Navaid::Navaid(QString identifier, QString name, qreal frequency, qreal latitude
 
 Navaid::~Navaid()
 {
+}
+
+Navaid* Navaid::parse(const QString &line)
+{
+    QStringList tokenList = line.split(',');
+
+    QString identifier = tokenList[NAVAID_ID_IDX];
+    QString name = tokenList[NAVAID_NAME_IDX];
+    qreal frequency = tokenList[NAVAID_FREQ_IDX].toDouble();
+    qreal latitude = tokenList[NAVAID_LAT_IDX].toDouble();
+    qreal longitude = tokenList[NAVAID_LON_IDX].toDouble();
+
+    return new Navaid(identifier, name, frequency, latitude, longitude);
 }

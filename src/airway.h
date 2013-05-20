@@ -28,20 +28,33 @@ class Airway : public QObject
     Q_OBJECT
 
 public:
+    enum AirwayType
+    {
+        UnknownType,
+        HighAltitudeType,
+        LowAltitudeType
+    };
+
     explicit Airway(QString &identifier);
     explicit Airway(const Airway &other);
     ~Airway();
 
+    static Airway* parse(const QString &line);
+
     QString identifier() const { return m_identifier; }
     QList<Leg*> legs() const { return m_legs; }
+    AirwayType type() const { return m_type; }
     Fix* start() const;
     Fix* end() const;
 
     void appendLeg(Leg *leg);
 
 private:
+    AirwayType parseType(const QString &identifier);
+
     QString m_identifier;
     QList<Leg*> m_legs;
+    AirwayType m_type;
 };
 
 #endif // AIRWAY_H

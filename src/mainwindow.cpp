@@ -50,7 +50,7 @@ void MainWindow::setAiracPath()
 //     drawAirports();
 //     drawNavaids();
 //     drawWaypoints();
-    drawAirways();
+//     drawAirways();
 }
 
 void MainWindow::drawAirports()
@@ -109,7 +109,7 @@ void MainWindow::drawAirways()
             {
                 if (qAbs(end->longitude() - start->longitude()) > 180)
                 {
-                    LineString *ls = createAirway(points);
+                    LineString *ls = createAirway(awy, points);
                     m_airwayLayer->addGeometry(ls);
 
                     points.clear();
@@ -121,7 +121,7 @@ void MainWindow::drawAirways()
             }
         }
 
-        LineString *ls = createAirway(points);
+        LineString *ls = createAirway(awy, points);
         m_airwayLayer->addGeometry(ls);
     }
 }
@@ -137,8 +137,14 @@ void MainWindow::createChilds()
     m_navaidPixmap = new QPixmap("/home/menax/Projekte/local/nd-planner/prototyping/bluedot.png");
     m_waypointPixmap = new QPixmap("/home/menax/Projekte/local/nd-planner/prototyping/reddot.png");
 
-    m_legPeg = new QPen(QColor(0,0,255,100));
-    m_legPeg->setWidth(1);
+    m_unknownAirwayPen = new QPen(QColor(255,128,0,100));
+    m_unknownAirwayPen->setWidth(1);
+
+    m_lowAirwayPen = new QPen(QColor(0,255,255,100));
+    m_lowAirwayPen->setWidth(1);
+
+    m_highAirwayPen = new QPen(QColor(0,0,255,100));
+    m_highAirwayPen->setWidth(1);
 
     m_airac = new Airac();
 }
@@ -179,7 +185,16 @@ void MainWindow::createMap()
     m_mapController->setZoom(2);
 }
 
-LineString* MainWindow::createAirway(const QList<Point*> &points)
+LineString* MainWindow::createAirway(Airway *airway, const QList<Point*> &points)
 {
-    return new LineString(points, "", m_legPeg);
+    QPen *pen;
+
+    switch (airway->type())
+    {
+        case Airway::LowAltitudeType: pen = m_lowAirwayPen; break;
+        case Airway::HighAltitudeType: pen = m_highAirwayPen; break;
+        default: pen = m_unknownAirwayPen; break;
+    }
+
+    return new LineString(points, "", pen);
 }

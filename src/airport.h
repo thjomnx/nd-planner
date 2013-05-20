@@ -30,6 +30,8 @@ public:
     explicit Airport(QString identifier, QString name, qreal latitude, qreal longitude, qint32 elevation);
     ~Airport();
 
+    static Airport* parse(const QString &line);
+
     QString identifier() const { return m_identifier; }
     QString name() const { return m_name; }
     qint32 elevation() const { return m_elevation; }

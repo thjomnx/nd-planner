@@ -15,7 +15,13 @@
  *    along with 'nd-planner'. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <QStringList>
+
 #include "waypoint.h"
+
+#define WAYPOINT_ID_IDX    0
+#define WAYPOINT_LAT_IDX   1
+#define WAYPOINT_LON_IDX   2
 
 Waypoint::Waypoint(QString identifier, qreal latitude, qreal longitude)
     : Fix(latitude, longitude)
@@ -25,4 +31,15 @@ Waypoint::Waypoint(QString identifier, qreal latitude, qreal longitude)
 
 Waypoint::~Waypoint()
 {
+}
+
+Waypoint* Waypoint::parse(const QString &line)
+{
+    QStringList tokenList = line.split(',');
+
+    QString identifier = tokenList[WAYPOINT_ID_IDX];
+    qreal latitude = tokenList[WAYPOINT_LAT_IDX].toDouble();
+    qreal longitude = tokenList[WAYPOINT_LON_IDX].toDouble();
+
+    return new Waypoint(identifier, latitude, longitude);
 }

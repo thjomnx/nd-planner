@@ -29,6 +29,7 @@
 #include "linestring.h"
 
 class Airac;
+class Airway;
 
 using namespace qmapcontrol;
 
@@ -58,7 +59,7 @@ private:
 
     void createMap();
 
-    LineString* createAirway(const QList<Point*> &points);
+    LineString* createAirway(Airway *airway, const QList<Point*> &points);
 
     QAction *action_loadAirac;
     QAction *action_Quit;
@@ -76,7 +77,9 @@ private:
     QPixmap *m_navaidPixmap;
     QPixmap *m_waypointPixmap;
 
-    QPen *m_legPeg;
+    QPen *m_unknownAirwayPen;
+    QPen *m_lowAirwayPen;
+    QPen *m_highAirwayPen;
 
     Airac *m_airac;
 };

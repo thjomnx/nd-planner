@@ -30,6 +30,8 @@ public:
     explicit Waypoint(QString identifier, qreal latitude, qreal longitude);
     ~Waypoint();
 
+    static Waypoint* parse(const QString &line);
+    
     QString identifier() const { return m_identifier; }
 
 private:
