@@ -43,10 +43,14 @@ void Airac::loadAirac(const QString &path)
 {
     m_path->setFileName(path);
 
-    loadAirports(m_path->fileName() + "/Airports.txt");
-    loadNavaids(m_path->fileName() + "/Navaids.txt");
+    qDebug() << "Loading AIRAC";
+
     loadWaypoints(m_path->fileName() + "/Waypoints.txt");
+    loadNavaids(m_path->fileName() + "/Navaids.txt");
+    loadAirports(m_path->fileName() + "/Airports.txt");
     loadAirways(m_path->fileName() + "/ATS.txt");
+
+    qDebug() << "AIRAC loaded";
 }
 
 void Airac::loadAirports(const QString &path)
@@ -167,7 +171,7 @@ void Airac::loadAirways(const QString &path)
 
             if (awy != 0)
             {
-                awy->appendLeg(leg);
+                awy->append(leg);
             }
         }
     }

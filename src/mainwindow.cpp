@@ -25,6 +25,8 @@
 #include "waypoint.h"
 #include "airway.h"
 #include "leg.h"
+#include "route.h"
+#include "segment.h"
 
 #include "point.h"
 #include "imagepoint.h"
@@ -50,12 +52,26 @@ void MainWindow::setAiracPath()
 //     drawAirports();
 //     drawNavaids();
 //     drawWaypoints();
-    drawAirways();
+//     drawAirways();
 }
 
 void MainWindow::setRoute()
 {
-    // TODO
+    QString str = "EDDL SID DODEN Y853 BOMBI UL984 RASPU UZ660 ROKEM UZ650 NARKA UL140 REBLA UL620 DINRO L601 ";
+    str += "ODERO UP975 SIV UW710 ARPUT UP975 KATUT UM688 DENKI UP975 ILMAP UM688 PEBAD UP975 SIDAD R784 ";
+    str += "IMDAT B416 DURSI R784 EGMIT B416 ORSAR R784 PEBAT B416 DESDI STAR OMDB";
+
+    Route *route = Route::parse(str, m_airac);
+
+//     foreach (Leg *leg, route->legs())
+//     {
+//         qDebug() << leg->start()->identifier() << "-->" << leg->end()->identifier();
+//     }
+//
+//     foreach (Segment *seg, route->segments())
+//     {
+//         qDebug() << seg->start();
+//     }
 }
 
 void MainWindow::drawAirports()

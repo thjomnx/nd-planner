@@ -15,32 +15,45 @@
  *    along with 'nd-planner'. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef AIRPORT_H
-#define AIRPORT_H
+#ifndef SEGMENT_H
+#define SEGMENT_H
 
 #include <QObject>
 
-#include "fix.h"
+class Fix;
+class Airway;
+class Leg;
 
-class Airport : public Fix
+class Segment : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit Airport(QString identifier, QString name, qreal latitude, qreal longitude, qint32 elevation);
-    ~Airport();
+    enum SegmentType
+    {
+        UnknownType,
+        DirectType,
+        EnrouteType,
+        DepartureType,
+        ArrivalType
+    };
 
-    static Airport* parse(const QString &line);
-    static Airport* find(const QString &icao, const QList<Airport*> &list);
+    explicit Segment(Leg *leg, Airway *airway = 0, SegmentType type = UnknownType);
+    explicit Segment(QList<Leg*> legs, Airway *airway = 0, SegmentType type = UnknownType);
+    ~Segment();
 
-    virtual QString identifier() const { return m_identifier; }
-    virtual QString name() const { return m_name; }
-    virtual qint32 elevation() const { return m_elevation; }
+    QList<Leg*> legs() const { return m_legs; }
+    Fix *start() const;
+    Fix *end() const;
+    Airway* airway() const { return m_airway; }
+
+    SegmentType type() const { return m_type; }
+    void setType(const SegmentType &type) { m_type = type; }
 
 private:
-    QString m_identifier;
-    QString m_name;
-    qint32 m_elevation;
+    QList<Leg*> m_legs;
+    Airway *m_airway;
+    SegmentType m_type;
 };
 
-#endif // AIRPORT_H
+#endif // SEGMENT_H

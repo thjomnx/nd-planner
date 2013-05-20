@@ -41,6 +41,7 @@ public:
 
     QFile* file() const { return m_path; }
 
+    QHash<QString, Fix*> fixes() const { return m_fixes; }
     QList<Airport*> airports() const { return m_airports; }
     QList<Navaid*> navaids() const { return m_navaids; }
     QList<Waypoint*> waypoints() const { return m_waypoints; }

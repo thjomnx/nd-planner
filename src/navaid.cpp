@@ -41,8 +41,8 @@ Navaid* Navaid::parse(const QString &line)
 {
     QStringList tokenList = line.split(',');
 
-    QString identifier = tokenList[NAVAID_ID_IDX];
-    QString name = tokenList[NAVAID_NAME_IDX];
+    QString identifier = tokenList[NAVAID_ID_IDX].trimmed();
+    QString name = tokenList[NAVAID_NAME_IDX].trimmed();
     qreal frequency = tokenList[NAVAID_FREQ_IDX].toDouble();
     qreal latitude = tokenList[NAVAID_LAT_IDX].toDouble();
     qreal longitude = tokenList[NAVAID_LON_IDX].toDouble();

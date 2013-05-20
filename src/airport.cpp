@@ -41,11 +41,27 @@ Airport* Airport::parse(const QString &line)
 {
     QStringList tokenList = line.split(',');
 
-    QString identifier = tokenList[AIRPORT_ID_IDX];
-    QString name = tokenList[AIRPORT_NAME_IDX];
+    QString identifier = tokenList[AIRPORT_ID_IDX].trimmed();
+    QString name = tokenList[AIRPORT_NAME_IDX].trimmed();
     qreal latitude = tokenList[AIRPORT_LAT_IDX].toDouble();
     qreal longitude = tokenList[AIRPORT_LON_IDX].toDouble();
     qint32 elevation = tokenList[AIRPORT_ELEV_IDX].toInt();
 
     return new Airport(identifier, name, latitude, longitude, elevation);
+}
+
+Airport* Airport::find(const QString &icao, const QList<Airport*> &list)
+{
+    Airport *result = 0;
+
+    foreach (Airport *ap, list)
+    {
+        if (ap->identifier() == icao)
+        {
+            result = ap;
+            break;
+        }
+    }
+
+    return result;
 }

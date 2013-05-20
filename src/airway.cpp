@@ -15,6 +15,7 @@
  *    along with 'nd-planner'. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <QDebug>
 #include <QStringList>
 
 #include "airway.h"
@@ -43,9 +44,76 @@ Airway* Airway::parse(const QString &line)
 {
     QStringList tokenList = line.split(',');
 
-    QString identifier = tokenList[1];
+    QString identifier = tokenList[1].trimmed();
 
     return new Airway(identifier);
+}
+
+Airway* Airway::find(const QString &id, const QList<Airway*> &list, Fix *start, Fix *end)
+{
+    Airway *result = 0;
+
+    foreach (Airway *awy, list)
+    {
+        if (awy->identifier() == id)
+        {
+            qDebug() << "Airway id match:" << id;
+
+            if (start != 0 && end != 0)
+            {
+                qDebug() << "Searching for leg with" << start->identifier() << "and" << end->identifier();
+
+                bool hit = false;
+
+                foreach (Leg *leg, awy->legs())
+                {
+                    if (!hit)
+                    {
+                        qDebug() << "Comparing" << leg->start() << "with" << start;
+
+                        if (leg->start() == start)
+                        {
+                            hit = true;
+                        }
+                    }
+
+                    if (hit)
+                    {
+                        qDebug() << "Comparing" << leg->end() << "with" << end;
+
+                        if (leg->end() == end)
+                        {
+                            result = awy;
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                result = awy;
+                break;
+            }
+        }
+    }
+
+    return result;
+}
+
+bool Airway::isAirway(const QString &id, const QList<Airway*> &list)
+{
+    bool result = false;
+
+    foreach (Airway *awy, list)
+    {
+        if (awy->identifier() == id)
+        {
+            result = true;
+            break;
+        }
+    }
+
+    return result;
 }
 
 Fix* Airway::entry() const
@@ -58,9 +126,51 @@ Fix* Airway::exit() const
     return (m_legs.last() != 0) ? m_legs.last()->end() : 0;
 }
 
-void Airway::appendLeg(Leg *leg)
+void Airway::append(Leg *leg)
 {
     m_legs.append(leg);
+}
+
+Leg* Airway::find(const Fix *start, const Fix *end)
+{
+    Leg *result = 0;
+
+    foreach (Leg *leg, m_legs)
+    {
+        if (leg->start() == start && leg->end() == end)
+        {
+            result = leg;
+            break;
+        }
+    }
+
+    return result;
+}
+
+QList<Leg*> Airway::findAll(const Fix *start, const Fix *end)
+{
+    QList<Leg*> result;
+    bool hit = false;
+
+    foreach (Leg *leg, m_legs)
+    {
+        if (leg->start() == start)
+        {
+            hit = true;
+        }
+
+        if (hit)
+        {
+            result.append(leg);
+        }
+
+        if (leg->end() == end)
+        {
+            break;
+        }
+    }
+
+    return result;
 }
 
 Airway::AirwayType Airway::parseType(const QString &identifier)

@@ -23,6 +23,8 @@
 
 #include "fix.h"
 
+class Airway;
+
 class Leg : public QObject
 {
     Q_OBJECT

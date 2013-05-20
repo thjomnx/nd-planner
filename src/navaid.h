@@ -31,10 +31,10 @@ public:
     ~Navaid();
 
     static Navaid* parse(const QString &line);
-    
-    QString identifier() const { return m_identifier; }
-    QString name() const { return m_name; }
-    qreal frequency() const { return m_frequency; }
+
+    virtual QString identifier() const { return m_identifier; }
+    virtual QString name() const { return m_name; }
+    virtual qreal frequency() const { return m_frequency; }
 
 private:
     QString m_identifier;

@@ -15,30 +15,35 @@
  *    along with 'nd-planner'. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef FIX_H
-#define FIX_H
+#include <QDebug>
 
-#include <QObject>
+#include "segment.h"
+#include "leg.h"
 
-class Fix : public QObject
+Segment::Segment(Leg *leg, Airway *airway, SegmentType type) : QObject()
 {
-    Q_OBJECT
+    m_legs.append(leg);
+    m_airway = airway;
+    m_type = type;
+}
 
-public:
-    Fix();
-    Fix(const Fix &other);
-    explicit Fix(qreal latitude, qreal longitude);
-    ~Fix();
+Segment::Segment(QList<Leg*> legs, Airway *airway, SegmentType type) : QObject()
+{
+    m_legs = legs;
+    m_airway = airway;
+    m_type = type;
+}
 
-    static Fix* find(const QString &id, const QList<Fix*> &list);
+Segment::~Segment()
+{
+}
 
-    virtual QString identifier() const = 0;
-    qreal latitude() const { return m_latitude; }
-    qreal longitude() const { return m_longitude; }
+Fix* Segment::start() const
+{
+    return (m_legs.first() != 0) ? m_legs.first()->start() : 0;
+}
 
-protected:
-    qreal m_latitude;
-    qreal m_longitude;
-};
-
-#endif // FIX_H
+Fix* Segment::end() const
+{
+    return (m_legs.last() != 0) ? m_legs.last()->end() : 0;
+}

@@ -37,9 +37,25 @@ Waypoint* Waypoint::parse(const QString &line)
 {
     QStringList tokenList = line.split(',');
 
-    QString identifier = tokenList[WAYPOINT_ID_IDX];
+    QString identifier = tokenList[WAYPOINT_ID_IDX].trimmed();
     qreal latitude = tokenList[WAYPOINT_LAT_IDX].toDouble();
     qreal longitude = tokenList[WAYPOINT_LON_IDX].toDouble();
 
     return new Waypoint(identifier, latitude, longitude);
+}
+
+Waypoint *Waypoint::find(const QString &id, const QList<Waypoint*> &list)
+{
+    Waypoint *result = 0;
+
+    foreach (Waypoint *wp, list)
+    {
+        if (wp->identifier() == id)
+        {
+            result = wp;
+            break;
+        }
+    }
+
+    return result;
 }

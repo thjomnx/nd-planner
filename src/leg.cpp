@@ -19,6 +19,7 @@
 
 #include "leg.h"
 #include "airac.h"
+#include "airway.h"
 
 #define LEG_STARTID_IDX    1
 #define LEG_STARTLAT_IDX   2
@@ -45,11 +46,11 @@ Leg* Leg::parse(const QString &line, QHash<QString, Fix*> &fixes)
 {
     QStringList tokenList = line.split(',');
 
-    QString startId = tokenList[LEG_STARTID_IDX];
+    QString startId = tokenList[LEG_STARTID_IDX].trimmed();
     qreal startLat = tokenList[LEG_STARTLAT_IDX].toDouble();
     qreal startLon = tokenList[LEG_STARTLON_IDX].toDouble();
 
-    QString endId = tokenList[LEG_ENDID_IDX];
+    QString endId = tokenList[LEG_ENDID_IDX].trimmed();
     qreal endLat = tokenList[LEG_ENDLAT_IDX].toDouble();
     qreal endLon = tokenList[LEG_ENDLON_IDX].toDouble();
 

@@ -19,6 +19,7 @@
 #define AIRWAY_H
 
 #include <QObject>
+#include <QHash>
 
 class Fix;
 class Leg;
@@ -40,14 +41,20 @@ public:
     ~Airway();
 
     static Airway* parse(const QString &line);
+    static Airway* find(const QString &id, const QList<Airway*> &list, Fix *start = 0, Fix *end = 0);
+    static bool isAirway(const QString &id, const QList<Airway*> &list);
 
     QString identifier() const { return m_identifier; }
     QList<Leg*> legs() const { return m_legs; }
-    AirwayType type() const { return m_type; }
     Fix* entry() const;
     Fix* exit() const;
 
-    void appendLeg(Leg *leg);
+    AirwayType type() const { return m_type; }
+    void setType(const AirwayType &type) { m_type = type; }
+
+    void append(Leg *leg);
+    Leg* find(const Fix *start, const Fix *end);
+    QList<Leg*> findAll(const Fix *start, const Fix *end);
 
 private:
     AirwayType parseType(const QString &identifier);

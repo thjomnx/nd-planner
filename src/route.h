@@ -20,6 +20,8 @@
 
 #include <QObject>
 
+class Airac;
+class Segment;
 class Leg;
 
 class Route : public QObject
@@ -27,15 +29,16 @@ class Route : public QObject
     Q_OBJECT
 
 public:
-    Route();
+    explicit Route(QList<Segment*> segments);
     ~Route();
 
-    static Route* parse(const QString &route);
+    static Route* parse(const QString &line, Airac *airac);
 
-    QList<Leg*> legs() const { return m_legs; }
+    QList<Segment*> segments() const { return m_segments; }
+    QList<Leg*> legs() const;
 
 private:
-    QList<Leg*> m_legs;
+    QList<Segment*> m_segments;
 };
 
 #endif // ROUTE_H

@@ -31,8 +31,9 @@ public:
     ~Waypoint();
 
     static Waypoint* parse(const QString &line);
-    
-    QString identifier() const { return m_identifier; }
+    static Waypoint* find(const QString &id, const QList<Waypoint*> &list);
+
+    virtual QString identifier() const { return m_identifier; }
 
 private:
     QString m_identifier;
