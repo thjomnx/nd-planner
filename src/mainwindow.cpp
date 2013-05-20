@@ -50,7 +50,12 @@ void MainWindow::setAiracPath()
 //     drawAirports();
 //     drawNavaids();
 //     drawWaypoints();
-//     drawAirways();
+    drawAirways();
+}
+
+void MainWindow::setRoute()
+{
+    // TODO
 }
 
 void MainWindow::drawAirports()
@@ -100,29 +105,57 @@ void MainWindow::drawAirways()
     {
         points.clear();
 
-        foreach (Leg *leg, awy->legs())
+        if (awy->legs().count() > 0)
         {
-            Fix *start = leg->start();
-            Fix *end = leg->end();
+            Fix *entry = awy->entry();
 
-            if (start != 0 && end != 0)
+            if (entry != 0)
             {
-                if (qAbs(end->longitude() - start->longitude()) > 180)
-                {
-                    LineString *ls = createAirway(awy, points);
-                    m_airwayLayer->addGeometry(ls);
-
-                    points.clear();
-
-                    continue;
-                }
-
-                points << new Point(start->longitude(), end->latitude());
+                points << new Point(entry->longitude(), entry->latitude());
             }
-        }
 
-        LineString *ls = createAirway(awy, points);
-        m_airwayLayer->addGeometry(ls);
+            foreach (Leg *leg, awy->legs())
+            {
+                Fix *start = leg->start();
+                Fix *end = leg->end();
+
+                if (start != 0 && end != 0)
+                {
+                    if (qAbs(end->longitude() - start->longitude()) > 180.0)
+                    {
+                        if (start->longitude() > 0.0)
+                        {
+                            points << new Point(end->longitude() + 360.0, end->latitude());
+                        }
+                        else if (start->longitude() < 0.0)
+                        {
+                            points << new Point(end->longitude() - 360.0, end->latitude());
+                        }
+
+                        LineString *ls = createAirway(awy, points);
+                        m_airwayLayer->addGeometry(ls);
+
+                        points.clear();
+
+                        if (start->longitude() > 0.0)
+                        {
+                            points << new Point(start->longitude() - 360.0, start->latitude());
+                        }
+                        else if (start->longitude() < 0.0)
+                        {
+                            points << new Point(start->longitude() + 360.0, start->latitude());
+                        }
+                    }
+                    else
+                    {
+                        points << new Point(end->longitude(), end->latitude());
+                    }
+                }
+            }
+
+            LineString *ls = createAirway(awy, points);
+            m_airwayLayer->addGeometry(ls);
+        }
     }
 }
 
@@ -151,10 +184,13 @@ void MainWindow::createChilds()
 
 void MainWindow::createActions()
 {
-    action_loadAirac = new QAction(tr("&Load AIRAC..."), this);
+    action_loadAirac = new QAction(tr("Load AIRAC..."), this);
     action_loadAirac->setStatusTip(tr("Loads an AIRAC file"));
 
-    action_Quit = new QAction(tr("&Quit"), this);
+    action_loadRoute = new QAction(tr("Load route..."), this);
+    action_loadRoute->setStatusTip(tr("Loads a route description"));
+
+    action_Quit = new QAction(tr("Quit"), this);
     action_Quit->setShortcut(QKeySequence::Quit);
     action_Quit->setStatusTip(tr("Quit"));
 }
@@ -162,12 +198,14 @@ void MainWindow::createActions()
 void MainWindow::createMenus()
 {
     menu_File->addAction(action_loadAirac);
+    menu_File->addAction(action_loadRoute);
     menu_File->addAction(action_Quit);
 }
 
 void MainWindow::makeConnections()
 {
     connect(action_loadAirac, SIGNAL(triggered(bool)), this, SLOT(setAiracPath()));
+    connect(action_loadRoute, SIGNAL(triggered(bool)), this, SLOT(setRoute()));
     connect(action_Quit, SIGNAL(triggered(bool)), this, SLOT(close()));
 }
 

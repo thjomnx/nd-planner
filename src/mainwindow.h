@@ -42,6 +42,8 @@ public:
 
 public slots:
     void setAiracPath();
+    void setRoute();
+
     void drawAirports();
     void drawNavaids();
     void drawWaypoints();
@@ -62,6 +64,7 @@ private:
     LineString* createAirway(Airway *airway, const QList<Point*> &points);
 
     QAction *action_loadAirac;
+    QAction *action_loadRoute;
     QAction *action_Quit;
 
     MapControl *m_mapController;

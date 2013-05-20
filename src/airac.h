@@ -50,7 +50,7 @@ public slots:
     void loadAirac(const QString &path);
 
 private:
-    void loadAiports(const QString &path);
+    void loadAirports(const QString &path);
     void loadNavaids(const QString &path);
     void loadWaypoints(const QString &path);
     void loadAirways(const QString &path);

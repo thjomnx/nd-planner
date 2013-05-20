@@ -48,12 +48,12 @@ Airway* Airway::parse(const QString &line)
     return new Airway(identifier);
 }
 
-Fix* Airway::start() const
+Fix* Airway::entry() const
 {
     return (m_legs.first() != 0) ? m_legs.first()->start() : 0;
 }
 
-Fix* Airway::end() const
+Fix* Airway::exit() const
 {
     return (m_legs.last() != 0) ? m_legs.last()->end() : 0;
 }

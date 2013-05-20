@@ -15,46 +15,27 @@
  *    along with 'nd-planner'. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef AIRWAY_H
-#define AIRWAY_H
+#ifndef ROUTE_H
+#define ROUTE_H
 
 #include <QObject>
 
-class Fix;
 class Leg;
 
-class Airway : public QObject
+class Route : public QObject
 {
     Q_OBJECT
 
 public:
-    enum AirwayType
-    {
-        UnknownType,
-        HighAltitudeType,
-        LowAltitudeType
-    };
+    Route();
+    ~Route();
 
-    explicit Airway(QString &identifier);
-    explicit Airway(const Airway &other);
-    ~Airway();
+    static Route* parse(const QString &route);
 
-    static Airway* parse(const QString &line);
-
-    QString identifier() const { return m_identifier; }
     QList<Leg*> legs() const { return m_legs; }
-    AirwayType type() const { return m_type; }
-    Fix* entry() const;
-    Fix* exit() const;
-
-    void appendLeg(Leg *leg);
 
 private:
-    AirwayType parseType(const QString &identifier);
-
-    QString m_identifier;
     QList<Leg*> m_legs;
-    AirwayType m_type;
 };
 
-#endif // AIRWAY_H
+#endif // ROUTE_H

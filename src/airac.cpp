@@ -43,13 +43,13 @@ void Airac::loadAirac(const QString &path)
 {
     m_path->setFileName(path);
 
-    loadAiports(m_path->fileName() + "/Airports.txt");
+    loadAirports(m_path->fileName() + "/Airports.txt");
     loadNavaids(m_path->fileName() + "/Navaids.txt");
     loadWaypoints(m_path->fileName() + "/Waypoints.txt");
     loadAirways(m_path->fileName() + "/ATS.txt");
 }
 
-void Airac::loadAiports(const QString &path)
+void Airac::loadAirports(const QString &path)
 {
     QFile airports(path);
 
