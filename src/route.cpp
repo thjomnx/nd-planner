@@ -56,11 +56,13 @@ Route* Route::parse(const QString &line, Airac *airac)
     {
         tokenList.removeFirst();
 
+        // TODO This may be also a navaid
         Waypoint *wp = Waypoint::find(tokenList.first(), airac->waypoints());
         dep = new Leg(origin, wp, 0.0);
     }
     else
     {
+        // TODO This may be also a navaid
         Waypoint *wp = Waypoint::find(tokenList.first(), airac->waypoints());
         dep = new Leg(origin, wp, 0.0);
     }
@@ -73,11 +75,13 @@ Route* Route::parse(const QString &line, Airac *airac)
     {
         tokenList.removeLast();
 
+        // TODO This may be also a navaid
         Waypoint *wp = Waypoint::find(tokenList.last(), airac->waypoints());
         arr = new Leg(wp, final, 0.0);
     }
     else
     {
+        // TODO This may be also a navaid
         Waypoint *wp = Waypoint::find(tokenList.last(), airac->waypoints());
         arr = new Leg(wp, final, 0.0);
     }
@@ -94,9 +98,15 @@ Route* Route::parse(const QString &line, Airac *airac)
         QString preview = "";
         bool hasAirway = false;
 
-        Fix *start = Fix::find(current, airac->fixes().values());
+        QList<Fix*> list = Fix::find(current, airac->fixes());
+        Fix *start = 0;
 
-        if (start == 0)
+        if (list.count() > 0)
+        {
+            // TODO Check here if the fix is the correct (the nearest) one
+            start = list.first();
+        }
+        else
         {
             qDebug() << "Fix not found:" << current;
             return 0;
@@ -108,9 +118,16 @@ Route* Route::parse(const QString &line, Airac *airac)
         if (hasAirway)
         {
             preview = it.peekNext();
-            Fix *end = Fix::find(preview, airac->fixes().values());
 
-            if (end == 0)
+            list = Fix::find(preview, airac->fixes());
+            Fix *end = 0;
+
+            if (list.count() > 0)
+            {
+                // TODO Check here if the fix is the correct (the nearest) one
+                end = list.first();
+            }
+            else
             {
                 qDebug() << "Fix not found:" << preview;
                 return 0;
@@ -132,9 +149,15 @@ Route* Route::parse(const QString &line, Airac *airac)
         }
         else
         {
-            Fix *end = Fix::find(current, airac->fixes().values());
+            list = Fix::find(current, airac->fixes());
+            Fix *end = 0;
 
-            if (end == 0)
+            if (list.count() > 0)
+            {
+                // TODO Check here if the fix is the correct (the nearest) one
+                end = list.first();
+            }
+            else
             {
                 qDebug() << "Fix not found:" << current;
                 return 0;

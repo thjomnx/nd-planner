@@ -39,6 +39,9 @@ MOC_DIR = ../build/$${name}/moc
 RCC_DIR = ../build/$${name}/rcc
 OBJECTS_DIR = ../build/$${name}
 
+# Build definitions
+DEFINES += "DUMP_AIRAC"
+
 # Main sources
 HEADERS += *.h
 SOURCES += *.cpp

@@ -19,6 +19,7 @@
 #define FIX_H
 
 #include <QObject>
+#include <QMultiHash>
 
 class Fix : public QObject
 {
@@ -30,7 +31,7 @@ public:
     explicit Fix(qreal latitude, qreal longitude);
     ~Fix();
 
-    static Fix* find(const QString &id, const QList<Fix*> &list);
+    static QList<Fix*> find(const QString &identifier, const QMultiHash<QString, Fix*> &hash);
 
     virtual QString identifier() const = 0;
     qreal latitude() const { return m_latitude; }

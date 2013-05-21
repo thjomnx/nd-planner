@@ -19,7 +19,7 @@
 #define AIRAC_H
 
 #include <QObject>
-#include <QHash>
+#include <QMultiHash>
 #include <QFile>
 
 class Fix;
@@ -37,11 +37,9 @@ public:
     Airac();
     ~Airac();
 
-    static QString buildKey(const QString &identifier, const qreal latitude, const qreal longitude);
-
     QFile* file() const { return m_path; }
 
-    QHash<QString, Fix*> fixes() const { return m_fixes; }
+    QMultiHash<QString, Fix*> fixes() const { return m_fixes; }
     QList<Airport*> airports() const { return m_airports; }
     QList<Navaid*> navaids() const { return m_navaids; }
     QList<Waypoint*> waypoints() const { return m_waypoints; }
@@ -58,7 +56,7 @@ private:
 
     QFile *m_path;
 
-    QHash<QString, Fix*> m_fixes;
+    QMultiHash<QString, Fix*> m_fixes;
     QList<Airport*> m_airports;
     QList<Navaid*> m_navaids;
     QList<Waypoint*> m_waypoints;

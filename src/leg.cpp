@@ -42,7 +42,7 @@ Leg::~Leg()
     delete m_end;
 }
 
-Leg* Leg::parse(const QString &line, QHash<QString, Fix*> &fixes)
+Leg* Leg::parse(const QString &line, QMultiHash<QString, Fix*> &fixes)
 {
     QStringList tokenList = line.split(',');
 
@@ -56,8 +56,30 @@ Leg* Leg::parse(const QString &line, QHash<QString, Fix*> &fixes)
 
     qreal distance = tokenList[LEG_DIST_IDX].toDouble();
 
-    Fix *start = fixes.value(Airac::buildKey(startId, startLat, startLon));
-    Fix *end = fixes.value(Airac::buildKey(endId, endLat, endLon));
+    Fix *start = 0;
+    Fix *end = 0;
+
+    QList<Fix*> startFixes = fixes.values(startId);
+
+    foreach (Fix *fix, startFixes)
+    {
+        if (fix->latitude() == startLat && fix->longitude() == startLon)
+        {
+            start = fix;
+            break;
+        }
+    }
+
+    QList<Fix*> endFixes = fixes.values(endId);
+
+    foreach (Fix *fix, endFixes)
+    {
+        if (fix->latitude() == endLat && fix->longitude() == endLon)
+        {
+            end = fix;
+            break;
+        }
+    }
 
     return new Leg(start, end, distance);
 }

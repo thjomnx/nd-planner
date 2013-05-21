@@ -39,18 +39,7 @@ Fix::~Fix()
 {
 }
 
-Fix* Fix::find(const QString &id, const QList<Fix*> &list)
+QList<Fix*> Fix::find(const QString &identifier, const QMultiHash<QString, Fix*> &hash)
 {
-    Fix *result = 0;
-
-    foreach (Fix *fix, list)
-    {
-        if (fix->identifier() == id)
-        {
-            result = fix;
-            break;
-        }
-    }
-
-    return result;
+    return hash.values(identifier);
 }

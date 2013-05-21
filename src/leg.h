@@ -19,7 +19,7 @@
 #define LEG_H
 
 #include <QObject>
-#include <QHash>
+#include <QMultiHash>
 
 #include "fix.h"
 
@@ -33,7 +33,7 @@ public:
     explicit Leg(Fix *start, Fix *end, qreal distance);
     ~Leg();
 
-    static Leg* parse(const QString &line, QHash<QString, Fix*> &fixes);
+    static Leg* parse(const QString &line, QMultiHash<QString, Fix*> &fixes);
 
     Fix* start() const { return m_start; }
     Fix* end() const { return m_end; }

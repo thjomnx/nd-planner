@@ -34,11 +34,6 @@ Airac::~Airac()
 {
 }
 
-QString Airac::buildKey(const QString &identifier, const qreal latitude, const qreal longitude)
-{
-    return QString("%1_%2_%3").arg(identifier).arg(latitude).arg(longitude);
-}
-
 void Airac::loadAirac(const QString &path)
 {
     m_path->setFileName(path);
@@ -65,6 +60,14 @@ void Airac::loadAirports(const QString &path)
 
     qDebug() << "Loading airports into memory";
 
+#ifdef DUMP_AIRAC
+    QFile dumpFile("loadAirports.dump");
+    dumpFile.open(QIODevice::WriteOnly | QIODevice::Text);
+    QTextStream dumpOut(&dumpFile);
+
+    quint64 dumpCnt = 0;
+#endif
+
     QTextStream in(&airports);
 
     while (!in.atEnd())
@@ -75,10 +78,23 @@ void Airac::loadAirports(const QString &path)
         {
             Airport *ap = Airport::parse(line);
 
-            m_fixes.insert(buildKey(ap->identifier(), ap->latitude(), ap->longitude()), ap);
+#ifdef DUMP_AIRAC
+            dumpOut << ap->identifier() << " --> " << ap << endl;
+            dumpCnt++;
+#endif
+
+            m_fixes.insert(ap->identifier(), ap);
             m_airports.append(ap);
         }
     }
+
+#ifdef DUMP_AIRAC
+    dumpOut << endl << dumpCnt << " airports loaded" << endl;
+    dumpOut << m_airports.count() << " airports in list" << endl;
+    dumpOut << m_fixes.count() << " fixes in hashmap" << endl;
+
+    dumpFile.close();
+#endif
 
     qDebug() << "Airports loaded";
 }
@@ -95,6 +111,14 @@ void Airac::loadNavaids(const QString &path)
 
     qDebug() << "Loading navaids into memory";
 
+#ifdef DUMP_AIRAC
+    QFile dumpFile("loadNavaids.dump");
+    dumpFile.open(QIODevice::WriteOnly | QIODevice::Text);
+    QTextStream dumpOut(&dumpFile);
+
+    quint64 dumpCnt = 0;
+#endif
+
     QTextStream in(&navaids);
 
     while (!in.atEnd())
@@ -103,9 +127,22 @@ void Airac::loadNavaids(const QString &path)
 
         Navaid *nav = Navaid::parse(line);
 
-        m_fixes.insert(buildKey(nav->identifier(), nav->latitude(), nav->longitude()), nav);
+#ifdef DUMP_AIRAC
+        dumpOut << nav->identifier() << " --> " << nav << endl;
+        dumpCnt++;
+#endif
+
+        m_fixes.insert(nav->identifier(), nav);
         m_navaids.append(nav);
     }
+
+#ifdef DUMP_AIRAC
+    dumpOut << endl << dumpCnt << " navaids loaded" << endl;
+    dumpOut << m_navaids.count() << " navaids in list" << endl;
+    dumpOut << m_fixes.count() << " fixes in hashmap" << endl;
+
+    dumpFile.close();
+#endif
 
     qDebug() << "Navaids loaded";
 }
@@ -122,6 +159,14 @@ void Airac::loadWaypoints(const QString &path)
 
     qDebug() << "Loading waypoints into memory";
 
+#ifdef DUMP_AIRAC
+    QFile dumpFile("loadWaypoints.dump");
+    dumpFile.open(QIODevice::WriteOnly | QIODevice::Text);
+    QTextStream dumpOut(&dumpFile);
+
+    quint64 dumpCnt = 0;
+#endif
+
     QTextStream in(&waypoints);
 
     while (!in.atEnd())
@@ -130,9 +175,22 @@ void Airac::loadWaypoints(const QString &path)
 
         Waypoint *wp = Waypoint::parse(line);
 
-        m_fixes.insert(buildKey(wp->identifier(), wp->latitude(), wp->longitude()), wp);
+#ifdef DUMP_AIRAC
+        dumpOut << wp->identifier() << " --> " << wp << endl;
+        dumpCnt++;
+#endif
+
+        m_fixes.insert(wp->identifier(), wp);
         m_waypoints.append(wp);
     }
+
+#ifdef DUMP_AIRAC
+    dumpOut << endl << dumpCnt << " waypoints loaded" << endl;
+    dumpOut << m_waypoints.count() << " waypoints in list" << endl;
+    dumpOut << m_fixes.count() << " fixes in hashmap" << endl;
+
+    dumpFile.close();
+#endif
 
     qDebug() << "Waypoints loaded";
 }
