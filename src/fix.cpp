@@ -16,6 +16,7 @@
  */
 
 #include "fix.h"
+#include "airac.h"
 
 Fix::Fix() : QObject()
 {
@@ -42,4 +43,22 @@ Fix::~Fix()
 QList<Fix*> Fix::find(const QString &identifier, const QMultiHash<QString, Fix*> &hash)
 {
     return hash.values(identifier);
+}
+
+Fix* Fix::nearest(const Fix *mark, const QList<Fix*> &list)
+{
+    Fix *result = 0;
+    qreal distance = 999999.0;
+
+    foreach (Fix *fix, list)
+    {
+        qreal d = Airac::distance(mark, fix);
+
+        if (d < distance)
+        {
+            result = fix;
+        }
+    }
+
+    return result;
 }

@@ -91,6 +91,7 @@ Route* Route::parse(const QString &line, Airac *airac)
 
     // Append enroute segments
     QStringListIterator it(tokenList);
+    Fix *last = origin;
 
     while (it.hasNext())
     {
@@ -103,8 +104,7 @@ Route* Route::parse(const QString &line, Airac *airac)
 
         if (list.count() > 0)
         {
-            // TODO Check here if the fix is the correct (the nearest) one
-            start = list.first();
+            start = Fix::nearest(last, list);
         }
         else
         {
@@ -124,8 +124,7 @@ Route* Route::parse(const QString &line, Airac *airac)
 
             if (list.count() > 0)
             {
-                // TODO Check here if the fix is the correct (the nearest) one
-                end = list.first();
+                end = Fix::nearest(start, list);
             }
             else
             {
@@ -154,8 +153,7 @@ Route* Route::parse(const QString &line, Airac *airac)
 
             if (list.count() > 0)
             {
-                // TODO Check here if the fix is the correct (the nearest) one
-                end = list.first();
+                end = Fix::nearest(start, list);
             }
             else
             {
@@ -168,6 +166,8 @@ Route* Route::parse(const QString &line, Airac *airac)
 
             segments.append(segment);
         }
+
+        last = start;
     }
 
     // Append arrival segment

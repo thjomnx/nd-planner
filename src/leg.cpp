@@ -59,9 +59,7 @@ Leg* Leg::parse(const QString &line, QMultiHash<QString, Fix*> &fixes)
     Fix *start = 0;
     Fix *end = 0;
 
-    QList<Fix*> startFixes = fixes.values(startId);
-
-    foreach (Fix *fix, startFixes)
+    foreach (Fix *fix, fixes.values(startId))
     {
         if (fix->latitude() == startLat && fix->longitude() == startLon)
         {
@@ -70,9 +68,7 @@ Leg* Leg::parse(const QString &line, QMultiHash<QString, Fix*> &fixes)
         }
     }
 
-    QList<Fix*> endFixes = fixes.values(endId);
-
-    foreach (Fix *fix, endFixes)
+    foreach (Fix *fix, fixes.values(endId))
     {
         if (fix->latitude() == endLat && fix->longitude() == endLon)
         {

@@ -15,6 +15,8 @@
  *    along with 'nd-planner'. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "math.h"
+
 #include <QDebug>
 #include <QTextStream>
 
@@ -32,6 +34,24 @@ Airac::Airac() : QObject()
 
 Airac::~Airac()
 {
+}
+
+// TODO Move this thing to a utility class
+qreal Airac::distance(const Fix *f1, const Fix *f2)
+{
+    const qreal EARTH_RADIUS_NM = 3438.2;
+
+    qreal lat1 = f1->latitude() * (M_PI / 180);
+    qreal lon1 = f1->longitude() * (M_PI / 180);
+    qreal lat2 = f2->latitude() * (M_PI / 180);
+    qreal lon2 = f2->longitude() * (M_PI / 180);
+
+    qreal dlon = lon2 - lon1;
+    qreal dlat = lat2 - lat1;
+
+    qreal a = pow(sin(dlat / 2), 2.0) + cos(f1->latitude() * (M_PI / 180)) * cos(f2->latitude() * (M_PI / 180)) * pow(sin(dlon / 2), 2.0);
+
+    return EARTH_RADIUS_NM * 2 * atan2(sqrt(a), sqrt(1 - a));
 }
 
 void Airac::loadAirac(const QString &path)

@@ -32,6 +32,7 @@ public:
     ~Fix();
 
     static QList<Fix*> find(const QString &identifier, const QMultiHash<QString, Fix*> &hash);
+    static Fix* nearest(const Fix *mark, const QList<Fix*> &list);
 
     virtual QString identifier() const = 0;
     qreal latitude() const { return m_latitude; }

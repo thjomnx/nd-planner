@@ -53,6 +53,11 @@ void MainWindow::setAiracPath()
 //     drawNavaids();
 //     drawWaypoints();
 //     drawAirways();
+
+    Airport *eddl = Airport::find("EDDL", m_airac->airports());
+    Airport *klax = Airport::find("KLAX", m_airac->airports());
+
+    qDebug() << "Distance EDDL --> KLAX =" << Airac::distance(eddl, klax);
 }
 
 void MainWindow::setRoute()

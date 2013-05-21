@@ -37,6 +37,8 @@ public:
     Airac();
     ~Airac();
 
+    static qreal distance(const Fix *f1, const Fix *f2);
+
     QFile* file() const { return m_path; }
 
     QMultiHash<QString, Fix*> fixes() const { return m_fixes; }
