@@ -44,13 +44,13 @@ Waypoint* Waypoint::parse(const QString &line)
     return new Waypoint(identifier, latitude, longitude);
 }
 
-Waypoint *Waypoint::find(const QString &id, const QList<Waypoint*> &list)
+Waypoint *Waypoint::find(const QString &identifier, const QList<Waypoint*> &list)
 {
     Waypoint *result = 0;
 
     foreach (Waypoint *wp, list)
     {
-        if (wp->identifier() == id)
+        if (wp->identifier() == identifier)
         {
             result = wp;
             break;

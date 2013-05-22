@@ -50,13 +50,13 @@ Airport* Airport::parse(const QString &line)
     return new Airport(identifier, name, latitude, longitude, elevation);
 }
 
-Airport* Airport::find(const QString &icao, const QList<Airport*> &list)
+Airport* Airport::find(const QString &identifier, const QList<Airport*> &list)
 {
     Airport *result = 0;
 
     foreach (Airport *ap, list)
     {
-        if (ap->identifier() == icao)
+        if (ap->identifier() == identifier)
         {
             result = ap;
             break;

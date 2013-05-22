@@ -33,13 +33,13 @@ public:
     {
         UnknownType,
         DirectType,
-        EnrouteType,
+        AirwayType,
         DepartureType,
         ArrivalType
     };
 
-    explicit Segment(Leg *leg, Airway *airway = 0, SegmentType type = UnknownType);
-    explicit Segment(QList<Leg*> legs, Airway *airway = 0, SegmentType type = UnknownType);
+    explicit Segment(Leg *leg, SegmentType type = UnknownType, Airway *airway = 0);
+    explicit Segment(QList<Leg*> legs, SegmentType type = UnknownType, Airway *airway = 0);
     ~Segment();
 
     QList<Leg*> legs() const { return m_legs; }
@@ -49,6 +49,8 @@ public:
 
     SegmentType type() const { return m_type; }
     void setType(const SegmentType &type) { m_type = type; }
+
+    qreal distance() const;
 
 private:
     QList<Leg*> m_legs;

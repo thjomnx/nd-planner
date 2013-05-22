@@ -49,28 +49,22 @@ Airway* Airway::parse(const QString &line)
     return new Airway(identifier);
 }
 
-Airway* Airway::find(const QString &id, const QList<Airway*> &list, Fix *start, Fix *end)
+Airway* Airway::find(const QString &identifier, const QList<Airway*> &list, Fix *start, Fix *end)
 {
     Airway *result = 0;
 
     foreach (Airway *awy, list)
     {
-        if (awy->identifier() == id)
+        if (awy->identifier() == identifier)
         {
-            qDebug() << "Airway id match:" << id;
-
             if (start != 0 && end != 0)
             {
-                qDebug() << "Searching for leg with" << start->identifier() << "and" << end->identifier();
-
                 bool hit = false;
 
                 foreach (Leg *leg, awy->legs())
                 {
                     if (!hit)
                     {
-                        qDebug() << "Comparing" << leg->start() << "with" << start;
-
                         if (leg->start() == start)
                         {
                             hit = true;
@@ -79,8 +73,6 @@ Airway* Airway::find(const QString &id, const QList<Airway*> &list, Fix *start, 
 
                     if (hit)
                     {
-                        qDebug() << "Comparing" << leg->end() << "with" << end;
-
                         if (leg->end() == end)
                         {
                             result = awy;
@@ -100,13 +92,13 @@ Airway* Airway::find(const QString &id, const QList<Airway*> &list, Fix *start, 
     return result;
 }
 
-bool Airway::isAirway(const QString &id, const QList<Airway*> &list)
+bool Airway::isAirway(const QString &identifier, const QList<Airway*> &list)
 {
     bool result = false;
 
     foreach (Airway *awy, list)
     {
-        if (awy->identifier() == id)
+        if (awy->identifier() == identifier)
         {
             result = true;
             break;

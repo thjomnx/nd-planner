@@ -15,8 +15,14 @@
  *    along with 'nd-planner'. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <limits>
+
+#include <QList>
+
 #include "fix.h"
 #include "airac.h"
+
+using namespace std;
 
 Fix::Fix() : QObject()
 {
@@ -48,7 +54,7 @@ QList<Fix*> Fix::find(const QString &identifier, const QMultiHash<QString, Fix*>
 Fix* Fix::nearest(const Fix *mark, const QList<Fix*> &list)
 {
     Fix *result = 0;
-    qreal distance = 999999.0;
+    qreal distance = std::numeric_limits<qreal>::max();
 
     foreach (Fix *fix, list)
     {
@@ -56,6 +62,7 @@ Fix* Fix::nearest(const Fix *mark, const QList<Fix*> &list)
 
         if (d < distance)
         {
+            distance = d;
             result = fix;
         }
     }

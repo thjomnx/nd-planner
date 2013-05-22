@@ -16,18 +16,19 @@
  */
 
 #include <QDebug>
+#include <QList>
 
 #include "segment.h"
 #include "leg.h"
 
-Segment::Segment(Leg *leg, Airway *airway, SegmentType type) : QObject()
+Segment::Segment(Leg *leg, SegmentType type, Airway *airway) : QObject()
 {
     m_legs.append(leg);
     m_airway = airway;
     m_type = type;
 }
 
-Segment::Segment(QList<Leg*> legs, Airway *airway, SegmentType type) : QObject()
+Segment::Segment(QList<Leg*> legs, SegmentType type, Airway *airway) : QObject()
 {
     m_legs = legs;
     m_airway = airway;
@@ -46,4 +47,16 @@ Fix* Segment::start() const
 Fix* Segment::end() const
 {
     return (m_legs.last() != 0) ? m_legs.last()->end() : 0;
+}
+
+qreal Segment::distance() const
+{
+    qreal dist = 0.0;
+
+    foreach (Leg *leg, m_legs)
+    {
+        dist += leg->distance();
+    }
+
+    return dist;
 }

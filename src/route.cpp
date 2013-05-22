@@ -26,9 +26,9 @@
 #include "leg.h"
 #include "segment.h"
 
-Route::Route(QList<Segment*> legs) : QObject()
+Route::Route(QList<Segment*> segments) : QObject()
 {
-    m_segments = legs;
+    m_segments = segments;
 }
 
 Route::~Route()
@@ -38,118 +38,72 @@ Route::~Route()
 Route* Route::parse(const QString &line, Airac *airac)
 {
     QList<Segment*> segments;
-    Leg *dep;
-    Leg *arr;
-
     QStringList tokenList = line.trimmed().split(' ');
-
-    foreach (QString t, tokenList)
-    {
-        qDebug() << t;
-    }
 
     // Parse departure segment
     Airport *origin = Airport::find(tokenList.first(), airac->airports());
+    Segment::SegmentType type = Segment::DirectType;
+
     tokenList.removeFirst();
 
     if (tokenList.first() == "SID")
     {
         tokenList.removeFirst();
-
-        // TODO This may be also a navaid
-        Waypoint *wp = Waypoint::find(tokenList.first(), airac->waypoints());
-        dep = new Leg(origin, wp, 0.0);
+        type = Segment::DepartureType;
     }
-    else
+    else if (tokenList.first() == "DCT")
     {
-        // TODO This may be also a navaid
-        Waypoint *wp = Waypoint::find(tokenList.first(), airac->waypoints());
-        dep = new Leg(origin, wp, 0.0);
+        tokenList.removeFirst();
     }
+
+    Fix *dfix = Fix::nearest(origin, Fix::find(tokenList.first(), airac->fixes()));
+    Leg *leg = new Leg(origin, dfix, Airac::distance(origin, dfix));
+    Segment *dep = new Segment(leg, type);
 
     // Parse arrival segment
     Airport *final = Airport::find((tokenList.last()), airac->airports());
+    type = Segment::DirectType;
+
     tokenList.removeLast();
 
     if (tokenList.last() == "STAR")
     {
         tokenList.removeLast();
-
-        // TODO This may be also a navaid
-        Waypoint *wp = Waypoint::find(tokenList.last(), airac->waypoints());
-        arr = new Leg(wp, final, 0.0);
+        type = Segment::ArrivalType;
     }
-    else
+    else if (tokenList.last() == "DCT")
     {
-        // TODO This may be also a navaid
-        Waypoint *wp = Waypoint::find(tokenList.last(), airac->waypoints());
-        arr = new Leg(wp, final, 0.0);
+        tokenList.removeLast();
     }
+
+    Fix *afix = Fix::nearest(final, Fix::find(tokenList.last(), airac->fixes()));
+    leg = new Leg(afix, final, Airac::distance(afix, final));
+    Segment *arr = new Segment(leg, type);
 
     // Append departure segment
-    segments.append(new Segment(dep, 0, Segment::DepartureType));
+    segments.append(dep);
 
     // Append enroute segments
     QStringListIterator it(tokenList);
-    Fix *last = origin;
+    it.next();
+
+    Fix *start = dep->end();
+    Fix *end = 0;
 
     while (it.hasNext())
     {
-        QString current = it.next();
+        QString current = "";
         QString preview = "";
-        bool hasAirway = false;
-
-        QList<Fix*> list = Fix::find(current, airac->fixes());
-        Fix *start = 0;
-
-        if (list.count() > 0)
-        {
-            start = Fix::nearest(last, list);
-        }
-        else
-        {
-            qDebug() << "Fix not found:" << current;
-            return 0;
-        }
+        bool isDirect = false;
+        QList<Fix*> list;
 
         current = it.next();
-        hasAirway = Airway::isAirway(current, airac->airways());
+        isDirect = current == "DCT" || !Airway::isAirway(current, airac->airways());
 
-        if (hasAirway)
+        if (isDirect)
         {
-            preview = it.peekNext();
-
-            list = Fix::find(preview, airac->fixes());
-            Fix *end = 0;
-
-            if (list.count() > 0)
-            {
-                end = Fix::nearest(start, list);
-            }
-            else
-            {
-                qDebug() << "Fix not found:" << preview;
-                return 0;
-            }
-
-            Airway *airway = Airway::find(current, airac->airways(), start, end);
-
-            if (airway == 0)
-            {
-                qDebug() << "Airway not found:" << current << "[" << start->identifier() << "-->" << end->identifier() << "]";
-
-                return 0;
-            }
-
-            QList<Leg*> list = airway->findAll(start, end);
-            Segment *segment = new Segment(list, airway, Segment::EnrouteType);
-
-            segments.append(segment);
-        }
-        else
-        {
+            current = it.next();
             list = Fix::find(current, airac->fixes());
-            Fix *end = 0;
 
             if (list.count() > 0)
             {
@@ -158,20 +112,63 @@ Route* Route::parse(const QString &line, Airac *airac)
             else
             {
                 qDebug() << "Fix not found:" << current;
+
                 return 0;
             }
 
-            Leg *leg = new Leg(start, end, 0.0);
-            Segment *segment = new Segment(leg, 0, Segment::EnrouteType);
+            Leg *leg = new Leg(start, end, Airac::distance(start, end));
+            Segment *segment = new Segment(leg, Segment::AirwayType);
 
             segments.append(segment);
         }
+        else
+        {
+            preview = it.peekNext();
 
-        last = start;
+            list = Fix::find(preview, airac->fixes());
+
+            if (list.count() == 0)
+            {
+                qDebug() << "No fixes found:" << preview;
+
+                return 0;
+            }
+
+            Airway *airway = 0;
+
+            foreach (Fix *fix, list)
+            {
+                airway = Airway::find(current, airac->airways(), start, fix);
+
+                if (airway != 0)
+                {
+                    end = fix;
+
+                    break;
+                }
+            }
+
+            if (airway == 0)
+            {
+                qDebug() << "Airway not found:" << current << "[" << start->identifier() << "-->" << preview << "]";
+
+                return 0;
+            }
+
+            QList<Leg*> list = airway->findAll(start, end);
+            Segment *segment = new Segment(list, Segment::AirwayType, airway);
+
+            segments.append(segment);
+
+            it.next();
+        }
+
+        start = end;
+        end = 0;
     }
 
     // Append arrival segment
-    segments.append(new Segment(arr, 0, Segment::ArrivalType));
+    segments.append(arr);
 
     return new Route(segments);
 }
@@ -186,4 +183,16 @@ QList<Leg*> Route::legs() const
     }
 
     return list;
+}
+
+qreal Route::distance() const
+{
+    qreal dist = 0.0;
+
+    foreach (Leg *leg, this->legs())
+    {
+        dist += leg->distance();
+    }
+
+    return dist;
 }

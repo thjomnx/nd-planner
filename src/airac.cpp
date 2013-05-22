@@ -15,7 +15,7 @@
  *    along with 'nd-planner'. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "math.h"
+#include <cmath>
 
 #include <QDebug>
 #include <QTextStream>
@@ -227,6 +227,14 @@ void Airac::loadAirways(const QString &path)
 
     qDebug() << "Loading airways into memory";
 
+#ifdef DUMP_AIRAC
+    QFile dumpFile("loadAirways.dump");
+    dumpFile.open(QIODevice::WriteOnly | QIODevice::Text);
+    QTextStream dumpOut(&dumpFile);
+
+    quint64 dumpCnt = 0;
+#endif
+
     QTextStream in(&airways);
     Airway *awy = 0;
 
@@ -239,6 +247,19 @@ void Airac::loadAirways(const QString &path)
             if (awy != 0)
             {
                 m_airways.append(awy);
+
+#ifdef DUMP_AIRAC
+                dumpOut << awy->identifier() << " --> " << awy << endl;
+
+                foreach (Leg *leg, awy->legs())
+                {
+                    dumpOut << leg->start()->identifier() << "(" << leg->start() << ") --> ";
+                    dumpOut << leg->end()->identifier() << "(" << leg->end() << ")" << endl;
+                    dumpCnt++;
+                }
+
+                dumpOut << endl;
+#endif
             }
 
             awy = Airway::parse(line);
@@ -253,6 +274,18 @@ void Airac::loadAirways(const QString &path)
             }
         }
     }
+
+    if (awy != 0)
+    {
+        m_airways.append(awy);
+    }
+
+#ifdef DUMP_AIRAC
+    dumpOut << endl << dumpCnt << " airways loaded" << endl;
+    dumpOut << m_airways.count() << " airways in list" << endl;
+
+    dumpFile.close();
+#endif
 
     qDebug() << "Airways loaded";
 }

@@ -36,6 +36,7 @@ public:
 
     QList<Segment*> segments() const { return m_segments; }
     QList<Leg*> legs() const;
+    qreal distance() const;
 
 private:
     QList<Segment*> m_segments;

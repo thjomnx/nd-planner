@@ -41,8 +41,8 @@ public:
     ~Airway();
 
     static Airway* parse(const QString &line);
-    static Airway* find(const QString &id, const QList<Airway*> &list, Fix *start = 0, Fix *end = 0);
-    static bool isAirway(const QString &id, const QList<Airway*> &list);
+    static Airway* find(const QString &identifier, const QList<Airway*> &list, Fix *start = 0, Fix *end = 0);
+    static bool isAirway(const QString &identifier, const QList<Airway*> &list);
 
     QString identifier() const { return m_identifier; }
     QList<Leg*> legs() const { return m_legs; }

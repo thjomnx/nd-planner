@@ -40,7 +40,7 @@ RCC_DIR = ../build/$${name}/rcc
 OBJECTS_DIR = ../build/$${name}
 
 # Build definitions
-DEFINES += "DUMP_AIRAC"
+#DEFINES += "DUMP_AIRAC"
 
 # Main sources
 HEADERS += *.h

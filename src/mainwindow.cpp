@@ -53,30 +53,46 @@ void MainWindow::setAiracPath()
 //     drawNavaids();
 //     drawWaypoints();
 //     drawAirways();
-
-    Airport *eddl = Airport::find("EDDL", m_airac->airports());
-    Airport *klax = Airport::find("KLAX", m_airac->airports());
-
-    qDebug() << "Distance EDDL --> KLAX =" << Airac::distance(eddl, klax);
 }
 
 void MainWindow::setRoute()
 {
-    QString str = "EDDL SID DODEN Y853 BOMBI UL984 RASPU UZ660 ROKEM UZ650 NARKA UL140 REBLA UL620 DINRO L601 ";
-    str += "ODERO UP975 SIV UW710 ARPUT UP975 KATUT UM688 DENKI UP975 ILMAP UM688 PEBAD UP975 SIDAD R784 ";
-    str += "IMDAT B416 DURSI R784 EGMIT B416 ORSAR R784 PEBAT B416 DESDI STAR OMDB";
+    QString rt1 = "EDDL SID DODEN Y853 BOMBI UL984 RASPU UZ660 ROKEM UZ650 NARKA UL140 REBLA UL620 DINRO L601 ";
+    rt1 += "ODERO UP975 SIV UW710 ARPUT UP975 KATUT UM688 DENKI UP975 ILMAP UM688 PEBAD UP975 SIDAD R784 ";
+    rt1 += "IMDAT B416 DURSI R784 EGMIT B416 ORSAR R784 PEBAT B416 DESDI STAR OMDB";
 
-    Route *route = Route::parse(str, m_airac);
+    QString rt2 = "EDDL DCT MODRU Z283 SUMAS UZ283 LNO UZ707 FAMEN UQ249 DISAK UQ237 LMG UN10 VELIN UN857 PPN ";
+    rt2 += "UQ73 KORNO UA857 ABODA UN857 IBALU UA857 AMETA UN857 TOVRA UA857 VEDOD UN857 LZR UN871 GDV UN729 BIMBO DCT LPMA";
 
-//     foreach (Leg *leg, route->legs())
-//     {
-//         qDebug() << leg->start()->identifier() << "-->" << leg->end()->identifier();
-//     }
-//
-//     foreach (Segment *seg, route->segments())
-//     {
-//         qDebug() << seg->start();
-//     }
+    QList<QString> list;
+    list.append(rt1);
+    list.append(rt2);
+
+    foreach (QString rt, list)
+    {
+        Route *route = Route::parse(rt, m_airac);
+
+        foreach (Leg *leg, route->legs())
+        {
+            qDebug() << leg->start()->identifier() << "-->" << leg->end()->identifier() << "(" << leg->distance() << "[nm] )";
+        }
+
+        qDebug() << endl;
+
+        foreach (Segment *seg, route->segments())
+        {
+            if (seg->type() == Segment::AirwayType)
+            {
+                qDebug() << seg->start()->identifier() << "-" << seg->airway()->identifier() << "->" << seg->end()->identifier() << "(" << seg->distance() << "[nm] )";
+            }
+            else
+            {
+                qDebug() << seg->start()->identifier() << "-->" << seg->end()->identifier() << "(" << seg->distance() << "[nm] )";
+            }
+        }
+
+        qDebug() << endl << "Overall route distance:" << route->distance() << "[nm]" << endl << endl;
+    }
 }
 
 void MainWindow::drawAirports()
