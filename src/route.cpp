@@ -92,12 +92,16 @@ Route* Route::parse(const QString &line, Airac *airac)
     Fix *start = dep->end();
     Fix *end = 0;
 
+    QString current, preview;
+    QList<Fix*> list;
+    bool isDirect = false;
+
     while (it.hasNext())
     {
-        QString current = "";
-        QString preview = "";
-        bool isDirect = false;
-        QList<Fix*> list;
+        current.clear();
+        preview.clear();
+        list.clear();
+        isDirect = false;
 
         current = it.next();
         isDirect = current == "DCT" || !Airway::exists(current, airways);

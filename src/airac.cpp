@@ -89,6 +89,7 @@ void Airac::loadAirports(const QString &path)
     quint64 dumpCnt = 0;
 #endif
 
+    m_airports.clear();
     m_airports.reserve(15000);
 
     QTextStream in(&airports);
@@ -144,6 +145,7 @@ void Airac::loadNavaids(const QString &path)
     quint64 dumpCnt = 0;
 #endif
 
+    m_navaids.clear();
     m_navaids.reserve(16000);
 
     QTextStream in(&navaids);
@@ -196,6 +198,7 @@ void Airac::loadWaypoints(const QString &path)
     quint64 dumpCnt = 0;
 #endif
 
+    m_waypoints.clear();
     m_waypoints.reserve(230000);
 
     QTextStream in(&waypoints);
@@ -248,6 +251,7 @@ void Airac::loadAirways(const QString &path)
     quint64 dumpCnt = 0;
 #endif
 
+    m_airways.clear();
     m_airways.reserve(150000);
 
     QTextStream in(&airways);

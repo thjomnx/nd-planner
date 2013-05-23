@@ -45,8 +45,3 @@ Airport* Airport::parse(const QString &line)
 
     return new Airport(identifier, name, latitude, longitude, elevation);
 }
-
-Airport* Airport::find(const QString &identifier, const QHash<QString, Airport*> &list)
-{
-    return list.value(identifier);
-}

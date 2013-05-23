@@ -39,12 +39,12 @@ Segment::Segment(QList<Leg*> legs, SegmentType type, Airway *airway)
 
 Fix* Segment::start() const
 {
-    return (m_legs.first() != 0) ? m_legs.first()->start() : 0;
+    return (!m_legs.isEmpty()) ? m_legs.first()->start() : 0;
 }
 
 Fix* Segment::end() const
 {
-    return (m_legs.last() != 0) ? m_legs.last()->end() : 0;
+    return (!m_legs.isEmpty()) ? m_legs.last()->end() : 0;
 }
 
 qreal Segment::distance() const

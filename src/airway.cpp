@@ -39,7 +39,6 @@ Airway::Airway(const Airway &other) : QObject()
 Airway* Airway::parse(const QString &line)
 {
     QStringList tokenList = line.split(',');
-
     QString identifier = tokenList[1].trimmed();
 
     return new Airway(identifier);
@@ -111,12 +110,12 @@ QList<Leg*> Airway::legs(const Fix *start, const Fix *end)
 
 Fix* Airway::entry() const
 {
-    return (m_legs.first() != 0) ? m_legs.first()->start() : 0;
+    return (!m_legs.isEmpty()) ? m_legs.first()->start() : 0;
 }
 
 Fix* Airway::exit() const
 {
-    return (m_legs.last() != 0) ? m_legs.last()->end() : 0;
+    return (!m_legs.isEmpty()) ? m_legs.last()->end() : 0;
 }
 
 void Airway::append(Leg *leg)

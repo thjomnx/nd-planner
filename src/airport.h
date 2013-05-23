@@ -32,7 +32,6 @@ public:
     ~Airport() { }
 
     static Airport* parse(const QString &line);
-    static Airport* find(const QString &identifier, const QHash<QString, Airport*> &list);
 
     virtual QString identifier() const { return m_identifier; }
     virtual QString name() const { return m_name; }
