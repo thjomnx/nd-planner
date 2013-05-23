@@ -19,6 +19,7 @@
 #define AIRPORT_H
 
 #include <QObject>
+#include <QHash>
 
 #include "fix.h"
 
@@ -28,10 +29,10 @@ class Airport : public Fix
 
 public:
     explicit Airport(QString identifier, QString name, qreal latitude, qreal longitude, qint32 elevation);
-    ~Airport();
+    ~Airport() { }
 
     static Airport* parse(const QString &line);
-    static Airport* find(const QString &identifier, const QList<Airport*> &list);
+    static Airport* find(const QString &identifier, const QHash<QString, Airport*> &list);
 
     virtual QString identifier() const { return m_identifier; }
     virtual QString name() const { return m_name; }

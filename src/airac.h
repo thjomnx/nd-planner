@@ -19,8 +19,10 @@
 #define AIRAC_H
 
 #include <QObject>
+#include <QHash>
 #include <QMultiHash>
-#include <QFile>
+
+class QFile;
 
 class Fix;
 class Airport;
@@ -35,18 +37,18 @@ class Airac : public QObject
 
 public:
     Airac();
-    ~Airac();
+    virtual ~Airac();
 
     // TODO Move this thing to a utility class
     static qreal distance(const Fix *f1, const Fix *f2);
 
     QFile* file() const { return m_path; }
 
-    QMultiHash<QString, Fix*> fixes() const { return m_fixes; }
-    QList<Airport*> airports() const { return m_airports; }
-    QList<Navaid*> navaids() const { return m_navaids; }
-    QList<Waypoint*> waypoints() const { return m_waypoints; }
-    QList<Airway*> airways() const { return m_airways; }
+    const QMultiHash<QString, Fix*> fixes() const { return m_fixes; }
+    const QHash<QString, Airport*> airports() const { return m_airports; }
+    const QMultiHash<QString, Navaid*> navaids() const { return m_navaids; }
+    const QMultiHash<QString, Waypoint*> waypoints() const { return m_waypoints; }
+    const QMultiHash<QString, Airway*> airways() const { return m_airways; }
 
 public slots:
     void loadAirac(const QString &path);
@@ -60,10 +62,10 @@ private:
     QFile *m_path;
 
     QMultiHash<QString, Fix*> m_fixes;
-    QList<Airport*> m_airports;
-    QList<Navaid*> m_navaids;
-    QList<Waypoint*> m_waypoints;
-    QList<Airway*> m_airways;
+    QHash<QString, Airport*> m_airports;
+    QMultiHash<QString, Navaid*> m_navaids;
+    QMultiHash<QString, Waypoint*> m_waypoints;
+    QMultiHash<QString, Airway*> m_airways;
 };
 
 #endif // AIRAC_H

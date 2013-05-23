@@ -26,22 +26,24 @@
 #include "leg.h"
 #include "segment.h"
 
-Route::Route(QList<Segment*> segments) : QObject()
+Route::Route(QList<Segment*> segments)
+    : QObject()
 {
     m_segments = segments;
 }
 
-Route::~Route()
-{
-}
-
 Route* Route::parse(const QString &line, Airac *airac)
 {
+    QHash<QString, Airport*> airports = airac->airports();
+    QMultiHash<QString, Fix*> fixes = airac->fixes();
+    QMultiHash<QString, Airway*> airways = airac->airways();
+
     QList<Segment*> segments;
+
     QStringList tokenList = line.trimmed().split(' ');
 
     // Parse departure segment
-    Airport *origin = Airport::find(tokenList.first(), airac->airports());
+    Airport *origin = airports.value(tokenList.first());
     Segment::SegmentType type = Segment::DirectType;
 
     tokenList.removeFirst();
@@ -56,12 +58,12 @@ Route* Route::parse(const QString &line, Airac *airac)
         tokenList.removeFirst();
     }
 
-    Fix *dfix = Fix::nearest(origin, Fix::find(tokenList.first(), airac->fixes()));
+    Fix *dfix = Fix::nearest(origin, fixes.values(tokenList.first()));
     Leg *leg = new Leg(origin, dfix, Airac::distance(origin, dfix));
     Segment *dep = new Segment(leg, type);
 
     // Parse arrival segment
-    Airport *final = Airport::find((tokenList.last()), airac->airports());
+    Airport *final = airports.value(tokenList.last());
     type = Segment::DirectType;
 
     tokenList.removeLast();
@@ -76,7 +78,7 @@ Route* Route::parse(const QString &line, Airac *airac)
         tokenList.removeLast();
     }
 
-    Fix *afix = Fix::nearest(final, Fix::find(tokenList.last(), airac->fixes()));
+    Fix *afix = Fix::nearest(final, fixes.values(tokenList.last()));
     leg = new Leg(afix, final, Airac::distance(afix, final));
     Segment *arr = new Segment(leg, type);
 
@@ -98,12 +100,12 @@ Route* Route::parse(const QString &line, Airac *airac)
         QList<Fix*> list;
 
         current = it.next();
-        isDirect = current == "DCT" || !Airway::isAirway(current, airac->airways());
+        isDirect = current == "DCT" || !Airway::exists(current, airways);
 
         if (isDirect)
         {
             current = it.next();
-            list = Fix::find(current, airac->fixes());
+            list = fixes.values(current);
 
             if (list.count() > 0)
             {
@@ -112,7 +114,6 @@ Route* Route::parse(const QString &line, Airac *airac)
             else
             {
                 qDebug() << "Fix not found:" << current;
-
                 return 0;
             }
 
@@ -124,13 +125,11 @@ Route* Route::parse(const QString &line, Airac *airac)
         else
         {
             preview = it.peekNext();
-
-            list = Fix::find(preview, airac->fixes());
+            list = fixes.values(preview);
 
             if (list.count() == 0)
             {
                 qDebug() << "No fixes found:" << preview;
-
                 return 0;
             }
 
@@ -138,12 +137,11 @@ Route* Route::parse(const QString &line, Airac *airac)
 
             foreach (Fix *fix, list)
             {
-                airway = Airway::find(current, airac->airways(), start, fix);
+                airway = Airway::find(current, airways, start, fix);
 
                 if (airway != 0)
                 {
                     end = fix;
-
                     break;
                 }
             }
@@ -151,11 +149,10 @@ Route* Route::parse(const QString &line, Airac *airac)
             if (airway == 0)
             {
                 qDebug() << "Airway not found:" << current << "[" << start->identifier() << "-->" << preview << "]";
-
                 return 0;
             }
 
-            QList<Leg*> list = airway->findAll(start, end);
+            QList<Leg*> list = airway->legs(start, end);
             Segment *segment = new Segment(list, Segment::AirwayType, airway);
 
             segments.append(segment);

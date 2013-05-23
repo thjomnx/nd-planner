@@ -21,22 +21,20 @@
 #include "segment.h"
 #include "leg.h"
 
-Segment::Segment(Leg *leg, SegmentType type, Airway *airway) : QObject()
+Segment::Segment(Leg *leg, SegmentType type, Airway *airway)
+    : QObject()
 {
     m_legs.append(leg);
     m_airway = airway;
     m_type = type;
 }
 
-Segment::Segment(QList<Leg*> legs, SegmentType type, Airway *airway) : QObject()
+Segment::Segment(QList<Leg*> legs, SegmentType type, Airway *airway)
+    : QObject()
 {
     m_legs = legs;
     m_airway = airway;
     m_type = type;
-}
-
-Segment::~Segment()
-{
 }
 
 Fix* Segment::start() const

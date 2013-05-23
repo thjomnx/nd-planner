@@ -28,7 +28,7 @@ class Navaid : public Fix
 
 public:
     explicit Navaid(QString identifier, QString name, qreal frequency, qreal latitude, qreal longitude);
-    ~Navaid();
+    ~Navaid() { }
 
     static Navaid* parse(const QString &line);
 

@@ -33,10 +33,6 @@ Airport::Airport(QString identifier, QString name, qreal latitude, qreal longitu
     m_elevation = elevation;
 }
 
-Airport::~Airport()
-{
-}
-
 Airport* Airport::parse(const QString &line)
 {
     QStringList tokenList = line.split(',');
@@ -50,18 +46,7 @@ Airport* Airport::parse(const QString &line)
     return new Airport(identifier, name, latitude, longitude, elevation);
 }
 
-Airport* Airport::find(const QString &identifier, const QList<Airport*> &list)
+Airport* Airport::find(const QString &identifier, const QHash<QString, Airport*> &list)
 {
-    Airport *result = 0;
-
-    foreach (Airport *ap, list)
-    {
-        if (ap->identifier() == identifier)
-        {
-            result = ap;
-            break;
-        }
-    }
-
-    return result;
+    return list.value(identifier);
 }

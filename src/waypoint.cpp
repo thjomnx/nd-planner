@@ -16,6 +16,7 @@
  */
 
 #include <QStringList>
+#include <QMultiHash>
 
 #include "waypoint.h"
 
@@ -29,10 +30,6 @@ Waypoint::Waypoint(QString identifier, qreal latitude, qreal longitude)
     m_identifier = identifier;
 }
 
-Waypoint::~Waypoint()
-{
-}
-
 Waypoint* Waypoint::parse(const QString &line)
 {
     QStringList tokenList = line.split(',');
@@ -42,20 +39,4 @@ Waypoint* Waypoint::parse(const QString &line)
     qreal longitude = tokenList[WAYPOINT_LON_IDX].toDouble();
 
     return new Waypoint(identifier, latitude, longitude);
-}
-
-Waypoint *Waypoint::find(const QString &identifier, const QList<Waypoint*> &list)
-{
-    Waypoint *result = 0;
-
-    foreach (Waypoint *wp, list)
-    {
-        if (wp->identifier() == identifier)
-        {
-            result = wp;
-            break;
-        }
-    }
-
-    return result;
 }

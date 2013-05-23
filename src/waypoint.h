@@ -28,10 +28,9 @@ class Waypoint : public Fix
 
 public:
     explicit Waypoint(QString identifier, qreal latitude, qreal longitude);
-    ~Waypoint();
+    ~Waypoint() { }
 
     static Waypoint* parse(const QString &line);
-    static Waypoint* find(const QString &identifier, const QList<Waypoint*> &list);
 
     virtual QString identifier() const { return m_identifier; }
 

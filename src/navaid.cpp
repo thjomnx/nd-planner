@@ -33,10 +33,6 @@ Navaid::Navaid(QString identifier, QString name, qreal frequency, qreal latitude
     m_frequency = frequency;
 }
 
-Navaid::~Navaid()
-{
-}
-
 Navaid* Navaid::parse(const QString &line)
 {
     QStringList tokenList = line.split(',');

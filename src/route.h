@@ -30,7 +30,7 @@ class Route : public QObject
 
 public:
     explicit Route(QList<Segment*> segments);
-    ~Route();
+    virtual ~Route() { }
 
     static Route* parse(const QString &line, Airac *airac);
 

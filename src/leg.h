@@ -31,7 +31,7 @@ class Leg : public QObject
 
 public:
     explicit Leg(Fix *start, Fix *end, qreal distance);
-    ~Leg();
+    virtual ~Leg();
 
     static Leg* parse(const QString &line, QMultiHash<QString, Fix*> &fixes);
 

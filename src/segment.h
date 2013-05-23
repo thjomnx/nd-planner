@@ -40,22 +40,22 @@ public:
 
     explicit Segment(Leg *leg, SegmentType type = UnknownType, Airway *airway = 0);
     explicit Segment(QList<Leg*> legs, SegmentType type = UnknownType, Airway *airway = 0);
-    ~Segment();
+    virtual ~Segment() { }
 
     QList<Leg*> legs() const { return m_legs; }
     Fix *start() const;
     Fix *end() const;
-    Airway* airway() const { return m_airway; }
 
     SegmentType type() const { return m_type; }
     void setType(const SegmentType &type) { m_type = type; }
 
+    Airway* airway() const { return m_airway; }
     qreal distance() const;
 
 private:
     QList<Leg*> m_legs;
-    Airway *m_airway;
     SegmentType m_type;
+    Airway *m_airway;
 };
 
 #endif // SEGMENT_H

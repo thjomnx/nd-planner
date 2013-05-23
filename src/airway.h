@@ -20,6 +20,7 @@
 
 #include <QObject>
 #include <QHash>
+#include <QMultiHash>
 
 class Fix;
 class Leg;
@@ -38,14 +39,15 @@ public:
 
     explicit Airway(QString &identifier);
     explicit Airway(const Airway &other);
-    ~Airway();
+    ~Airway() { }
 
     static Airway* parse(const QString &line);
-    static Airway* find(const QString &identifier, const QList<Airway*> &list, Fix *start = 0, Fix *end = 0);
-    static bool isAirway(const QString &identifier, const QList<Airway*> &list);
+    static Airway* find(const QString &identifier, const QMultiHash<QString, Airway*> &mhash, Fix *start, Fix *end);
+    static bool exists(const QString &identifier, const QMultiHash<QString, Airway*> &mhash);
 
     QString identifier() const { return m_identifier; }
     QList<Leg*> legs() const { return m_legs; }
+    QList<Leg*> legs(const Fix *start, const Fix *end);
     Fix* entry() const;
     Fix* exit() const;
 
@@ -53,8 +55,6 @@ public:
     void setType(const AirwayType &type) { m_type = type; }
 
     void append(Leg *leg);
-    Leg* find(const Fix *start, const Fix *end);
-    QList<Leg*> findAll(const Fix *start, const Fix *end);
 
 private:
     AirwayType parseType(const QString &identifier);

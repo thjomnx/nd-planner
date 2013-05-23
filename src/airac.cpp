@@ -18,6 +18,7 @@
 #include <cmath>
 
 #include <QDebug>
+#include <QFile>
 #include <QTextStream>
 
 #include "airac.h"
@@ -88,6 +89,8 @@ void Airac::loadAirports(const QString &path)
     quint64 dumpCnt = 0;
 #endif
 
+    m_airports.reserve(15000);
+
     QTextStream in(&airports);
 
     while (!in.atEnd())
@@ -104,9 +107,11 @@ void Airac::loadAirports(const QString &path)
 #endif
 
             m_fixes.insert(ap->identifier(), ap);
-            m_airports.append(ap);
+            m_airports.insert(ap->identifier(), ap);
         }
     }
+
+    m_airports.squeeze();
 
 #ifdef DUMP_AIRAC
     dumpOut << endl << dumpCnt << " airports loaded" << endl;
@@ -139,6 +144,8 @@ void Airac::loadNavaids(const QString &path)
     quint64 dumpCnt = 0;
 #endif
 
+    m_navaids.reserve(16000);
+
     QTextStream in(&navaids);
 
     while (!in.atEnd())
@@ -153,8 +160,10 @@ void Airac::loadNavaids(const QString &path)
 #endif
 
         m_fixes.insert(nav->identifier(), nav);
-        m_navaids.append(nav);
+        m_navaids.insert(nav->identifier(), nav);
     }
+
+    m_navaids.squeeze();
 
 #ifdef DUMP_AIRAC
     dumpOut << endl << dumpCnt << " navaids loaded" << endl;
@@ -187,6 +196,8 @@ void Airac::loadWaypoints(const QString &path)
     quint64 dumpCnt = 0;
 #endif
 
+    m_waypoints.reserve(230000);
+
     QTextStream in(&waypoints);
 
     while (!in.atEnd())
@@ -201,8 +212,10 @@ void Airac::loadWaypoints(const QString &path)
 #endif
 
         m_fixes.insert(wp->identifier(), wp);
-        m_waypoints.append(wp);
+        m_waypoints.insert(wp->identifier(), wp);
     }
+
+    m_waypoints.squeeze();
 
 #ifdef DUMP_AIRAC
     dumpOut << endl << dumpCnt << " waypoints loaded" << endl;
@@ -235,6 +248,8 @@ void Airac::loadAirways(const QString &path)
     quint64 dumpCnt = 0;
 #endif
 
+    m_airways.reserve(150000);
+
     QTextStream in(&airways);
     Airway *awy = 0;
 
@@ -246,7 +261,7 @@ void Airac::loadAirways(const QString &path)
         {
             if (awy != 0)
             {
-                m_airways.append(awy);
+                m_airways.insert(awy->identifier(), awy);
 
 #ifdef DUMP_AIRAC
                 dumpOut << awy->identifier() << " --> " << awy << endl;
@@ -277,8 +292,10 @@ void Airac::loadAirways(const QString &path)
 
     if (awy != 0)
     {
-        m_airways.append(awy);
+        m_airways.insert(awy->identifier(), awy);
     }
+
+    m_airways.squeeze();
 
 #ifdef DUMP_AIRAC
     dumpOut << endl << dumpCnt << " airways loaded" << endl;

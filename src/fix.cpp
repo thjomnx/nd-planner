@@ -42,15 +42,6 @@ Fix::Fix(qreal latitude, qreal longitude) : QObject()
     m_longitude = longitude;
 }
 
-Fix::~Fix()
-{
-}
-
-QList<Fix*> Fix::find(const QString &identifier, const QMultiHash<QString, Fix*> &hash)
-{
-    return hash.values(identifier);
-}
-
 Fix* Fix::nearest(const Fix *mark, const QList<Fix*> &list)
 {
     Fix *result = 0;

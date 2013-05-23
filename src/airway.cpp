@@ -33,11 +33,7 @@ Airway::Airway(const Airway &other) : QObject()
 {
     m_identifier = other.identifier();
     m_legs = other.legs();
-    m_type = parseType(other.identifier());
-}
-
-Airway::~Airway()
-{
+    m_type = other.type();
 }
 
 Airway* Airway::parse(const QString &line)
@@ -49,42 +45,32 @@ Airway* Airway::parse(const QString &line)
     return new Airway(identifier);
 }
 
-Airway* Airway::find(const QString &identifier, const QList<Airway*> &list, Fix *start, Fix *end)
+Airway* Airway::find(const QString &identifier, const QMultiHash<QString, Airway*> &mhash, Fix *start, Fix *end)
 {
     Airway *result = 0;
+    bool hit;
 
-    foreach (Airway *awy, list)
+    foreach (Airway *awy, mhash.values(identifier))
     {
-        if (awy->identifier() == identifier)
+        hit = false;
+
+        foreach (Leg *leg, awy->legs())
         {
-            if (start != 0 && end != 0)
+            if (!hit)
             {
-                bool hit = false;
-
-                foreach (Leg *leg, awy->legs())
+                if (leg->start() == start)
                 {
-                    if (!hit)
-                    {
-                        if (leg->start() == start)
-                        {
-                            hit = true;
-                        }
-                    }
-
-                    if (hit)
-                    {
-                        if (leg->end() == end)
-                        {
-                            result = awy;
-                            break;
-                        }
-                    }
+                    hit = true;
                 }
             }
-            else
+
+            if (hit)
             {
-                result = awy;
-                break;
+                if (leg->end() == end)
+                {
+                    result = awy;
+                    break;
+                }
             }
         }
     }
@@ -92,54 +78,12 @@ Airway* Airway::find(const QString &identifier, const QList<Airway*> &list, Fix 
     return result;
 }
 
-bool Airway::isAirway(const QString &identifier, const QList<Airway*> &list)
+bool Airway::exists(const QString &identifier, const QMultiHash<QString, Airway*> &mhash)
 {
-    bool result = false;
-
-    foreach (Airway *awy, list)
-    {
-        if (awy->identifier() == identifier)
-        {
-            result = true;
-            break;
-        }
-    }
-
-    return result;
+    return mhash.values(identifier).count() > 0;
 }
 
-Fix* Airway::entry() const
-{
-    return (m_legs.first() != 0) ? m_legs.first()->start() : 0;
-}
-
-Fix* Airway::exit() const
-{
-    return (m_legs.last() != 0) ? m_legs.last()->end() : 0;
-}
-
-void Airway::append(Leg *leg)
-{
-    m_legs.append(leg);
-}
-
-Leg* Airway::find(const Fix *start, const Fix *end)
-{
-    Leg *result = 0;
-
-    foreach (Leg *leg, m_legs)
-    {
-        if (leg->start() == start && leg->end() == end)
-        {
-            result = leg;
-            break;
-        }
-    }
-
-    return result;
-}
-
-QList<Leg*> Airway::findAll(const Fix *start, const Fix *end)
+QList<Leg*> Airway::legs(const Fix *start, const Fix *end)
 {
     QList<Leg*> result;
     bool hit = false;
@@ -163,6 +107,21 @@ QList<Leg*> Airway::findAll(const Fix *start, const Fix *end)
     }
 
     return result;
+}
+
+Fix* Airway::entry() const
+{
+    return (m_legs.first() != 0) ? m_legs.first()->start() : 0;
+}
+
+Fix* Airway::exit() const
+{
+    return (m_legs.last() != 0) ? m_legs.last()->end() : 0;
+}
+
+void Airway::append(Leg *leg)
+{
+    m_legs.append(leg);
 }
 
 Airway::AirwayType Airway::parseType(const QString &identifier)
