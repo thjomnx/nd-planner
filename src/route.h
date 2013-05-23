@@ -19,10 +19,11 @@
 #define ROUTE_H
 
 #include <QObject>
+#include <QList>
 
 class Airac;
-class Segment;
 class Leg;
+class Segment;
 
 class Route : public QObject
 {

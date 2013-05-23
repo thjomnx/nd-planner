@@ -19,7 +19,6 @@
 #define AIRPORT_H
 
 #include <QObject>
-#include <QHash>
 
 #include "fix.h"
 

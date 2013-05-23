@@ -29,7 +29,8 @@
 #define LEG_ENDLON_IDX     6
 #define LEG_DIST_IDX       9
 
-Leg::Leg(Fix *start, Fix *end, qreal distance) : QObject()
+Leg::Leg(Fix *start, Fix *end, qreal distance)
+    : QObject()
 {
     m_start = start;
     m_end = end;

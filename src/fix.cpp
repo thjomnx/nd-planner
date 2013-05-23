@@ -24,19 +24,22 @@
 
 using namespace std;
 
-Fix::Fix() : QObject()
+Fix::Fix()
+    : QObject()
 {
     m_latitude = 0.0;
     m_longitude = 0.0;
 }
 
-Fix::Fix(const Fix &other) : QObject()
+Fix::Fix(const Fix &other)
+    : QObject()
 {
     m_latitude = other.latitude();
     m_longitude = other.longitude();
 }
 
-Fix::Fix(qreal latitude, qreal longitude) : QObject()
+Fix::Fix(qreal latitude, qreal longitude)
+    : QObject()
 {
     m_latitude = latitude;
     m_longitude = longitude;

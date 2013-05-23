@@ -19,6 +19,7 @@
 #define FIX_H
 
 #include <QObject>
+#include <QList>
 
 class Fix : public QObject
 {

@@ -28,7 +28,8 @@
 #include "airway.h"
 #include "leg.h"
 
-Airac::Airac() : QObject()
+Airac::Airac()
+    : QObject()
 {
     m_path = new QFile(this);
 }

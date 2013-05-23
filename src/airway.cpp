@@ -23,13 +23,15 @@
 
 #define AIRWAY_ID_IDX      1
 
-Airway::Airway(QString &identifier) : QObject()
+Airway::Airway(QString &identifier)
+    : QObject()
 {
     m_identifier = identifier;
     m_type = parseType(identifier);
 }
 
-Airway::Airway(const Airway &other) : QObject()
+Airway::Airway(const Airway &other)
+    : QObject()
 {
     m_identifier = other.identifier();
     m_legs = other.legs();
@@ -44,12 +46,12 @@ Airway* Airway::parse(const QString &line)
     return new Airway(identifier);
 }
 
-Airway* Airway::find(const QString &identifier, const QMultiHash<QString, Airway*> &mhash, Fix *start, Fix *end)
+Airway* Airway::find(const QString &identifier, const QMultiHash<QString, Airway*> &airways, Fix *start, Fix *end)
 {
     Airway *result = 0;
     bool hit;
 
-    foreach (Airway *awy, mhash.values(identifier))
+    foreach (Airway *awy, airways.values(identifier))
     {
         hit = false;
 
@@ -77,9 +79,9 @@ Airway* Airway::find(const QString &identifier, const QMultiHash<QString, Airway
     return result;
 }
 
-bool Airway::exists(const QString &identifier, const QMultiHash<QString, Airway*> &mhash)
+bool Airway::exists(const QString &identifier, const QMultiHash<QString, Airway*> &airways)
 {
-    return mhash.values(identifier).count() > 0;
+    return airways.values(identifier).count() > 0;
 }
 
 QList<Leg*> Airway::legs(const Fix *start, const Fix *end)

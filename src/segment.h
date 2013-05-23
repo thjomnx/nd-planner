@@ -19,6 +19,7 @@
 #define SEGMENT_H
 
 #include <QObject>
+#include <QList>
 
 class Fix;
 class Airway;
