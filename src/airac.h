@@ -44,11 +44,11 @@ public:
 
     QFile* file() const { return m_path; }
 
-    const QMultiHash<QString, Fix*> fixes() const { return m_fixes; }
-    const QHash<QString, Airport*> airports() const { return m_airports; }
-    const QMultiHash<QString, Navaid*> navaids() const { return m_navaids; }
-    const QMultiHash<QString, Waypoint*> waypoints() const { return m_waypoints; }
-    const QMultiHash<QString, Airway*> airways() const { return m_airways; }
+    QMultiHash<QString, Fix*> fixes() const { return m_fixes; }
+    QMultiHash<QString, Airport*> airports() const;
+    QMultiHash<QString, Navaid*> navaids() const;
+    QMultiHash<QString, Waypoint*> waypoints() const;
+    QMultiHash<QString, Airway*> airways() const { return m_airways; }
 
 public slots:
     void loadAirac(const QString &path);
@@ -62,9 +62,6 @@ private:
     QFile *m_path;
 
     QMultiHash<QString, Fix*> m_fixes;
-    QHash<QString, Airport*> m_airports;
-    QMultiHash<QString, Navaid*> m_navaids;
-    QMultiHash<QString, Waypoint*> m_waypoints;
     QMultiHash<QString, Airway*> m_airways;
 };
 

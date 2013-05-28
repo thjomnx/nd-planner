@@ -37,12 +37,6 @@ Leg::Leg(Fix *start, Fix *end, qreal distance)
     m_distance = distance;
 }
 
-Leg::~Leg()
-{
-    delete m_start;
-    delete m_end;
-}
-
 Leg* Leg::parse(const QString &line, QMultiHash<QString, Fix*> &fixes)
 {
     QStringList tokenList = line.split(',');

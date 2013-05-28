@@ -20,8 +20,6 @@
 
 #include "route.h"
 #include "airac.h"
-#include "airport.h"
-#include "waypoint.h"
 #include "airway.h"
 #include "leg.h"
 #include "segment.h"
@@ -34,7 +32,6 @@ Route::Route(QList<Segment*> segments)
 
 Route* Route::parse(const QString &line, Airac *airac)
 {
-    QHash<QString, Airport*> airports = airac->airports();
     QMultiHash<QString, Fix*> fixes = airac->fixes();
     QMultiHash<QString, Airway*> airways = airac->airways();
 
@@ -43,7 +40,7 @@ Route* Route::parse(const QString &line, Airac *airac)
     QStringList tokenList = line.trimmed().split(' ');
 
     // Parse departure segment
-    Airport *origin = airports.value(tokenList.first());
+    Fix *origin = fixes.value(tokenList.first());
     Segment::SegmentType type = Segment::DirectType;
 
     tokenList.removeFirst();
@@ -63,7 +60,7 @@ Route* Route::parse(const QString &line, Airac *airac)
     Segment *dep = new Segment(leg, type);
 
     // Parse arrival segment
-    Airport *final = airports.value(tokenList.last());
+    Fix *final = fixes.value(tokenList.last());
     type = Segment::DirectType;
 
     tokenList.removeLast();

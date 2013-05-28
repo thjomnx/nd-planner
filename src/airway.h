@@ -39,7 +39,7 @@ public:
 
     explicit Airway(QString &identifier);
     explicit Airway(const Airway &other);
-    ~Airway() { }
+    virtual ~Airway();
 
     static Airway* parse(const QString &line);
     static Airway* find(const QString &identifier, const QMultiHash<QString, Airway*> &airways, Fix *start, Fix *end);

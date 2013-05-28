@@ -38,6 +38,12 @@ Airway::Airway(const Airway &other)
     m_type = other.type();
 }
 
+Airway::~Airway()
+{
+    qDeleteAll(m_legs);
+    m_legs.clear();
+}
+
 Airway* Airway::parse(const QString &line)
 {
     QStringList tokenList = line.split(',');

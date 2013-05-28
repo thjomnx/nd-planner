@@ -56,16 +56,79 @@ qreal Airac::distance(const Fix *f1, const Fix *f2)
     return EARTH_RADIUS_NM * 2 * atan2(sqrt(a), sqrt(1 - a));
 }
 
+QMultiHash<QString, Airport*> Airac::airports() const
+{
+    QMultiHash<QString, Airport*> airports;
+
+    foreach (Fix *fix, m_fixes)
+    {
+        Airport *ap = dynamic_cast<Airport*>(fix);
+
+        if (ap != 0)
+        {
+            airports.insert(ap->identifier(), ap);
+        }
+    }
+
+    return airports;
+}
+
+QMultiHash<QString, Navaid*> Airac::navaids() const
+{
+    QMultiHash<QString, Navaid*> navaids;
+
+    foreach (Fix *fix, m_fixes)
+    {
+        Navaid *nav = dynamic_cast<Navaid*>(fix);
+
+        if (nav != 0)
+        {
+            navaids.insert(nav->identifier(), nav);
+        }
+    }
+
+    return navaids;
+}
+
+QMultiHash<QString, Waypoint*> Airac::waypoints() const
+{
+    QMultiHash<QString, Waypoint*> waypoints;
+
+    foreach (Fix *fix, m_fixes)
+    {
+        Waypoint *wp = dynamic_cast<Waypoint*>(fix);
+
+        if (wp != 0)
+        {
+            waypoints.insert(wp->identifier(), wp);
+        }
+    }
+
+    return waypoints;
+}
+
 void Airac::loadAirac(const QString &path)
 {
     m_path->setFileName(path);
 
+    qDeleteAll(m_airways);
+    m_airways.clear();
+
+    qDeleteAll(m_fixes);
+    m_fixes.clear();
+
     qDebug() << "Loading AIRAC";
+
+    m_fixes.reserve(350000);
+    m_airways.reserve(100000);
 
     loadWaypoints(m_path->fileName() + "/Waypoints.txt");
     loadNavaids(m_path->fileName() + "/Navaids.txt");
     loadAirports(m_path->fileName() + "/Airports.txt");
     loadAirways(m_path->fileName() + "/ATS.txt");
+
+    m_fixes.squeeze();
+    m_airways.squeeze();
 
     qDebug() << "AIRAC loaded";
 }
@@ -90,9 +153,6 @@ void Airac::loadAirports(const QString &path)
     quint64 dumpCnt = 0;
 #endif
 
-    m_airports.clear();
-    m_airports.reserve(15000);
-
     QTextStream in(&airports);
 
     while (!in.atEnd())
@@ -109,11 +169,8 @@ void Airac::loadAirports(const QString &path)
 #endif
 
             m_fixes.insert(ap->identifier(), ap);
-            m_airports.insert(ap->identifier(), ap);
         }
     }
-
-    m_airports.squeeze();
 
 #ifdef DUMP_AIRAC
     dumpOut << endl << dumpCnt << " airports loaded" << endl;
@@ -146,9 +203,6 @@ void Airac::loadNavaids(const QString &path)
     quint64 dumpCnt = 0;
 #endif
 
-    m_navaids.clear();
-    m_navaids.reserve(16000);
-
     QTextStream in(&navaids);
 
     while (!in.atEnd())
@@ -163,10 +217,7 @@ void Airac::loadNavaids(const QString &path)
 #endif
 
         m_fixes.insert(nav->identifier(), nav);
-        m_navaids.insert(nav->identifier(), nav);
     }
-
-    m_navaids.squeeze();
 
 #ifdef DUMP_AIRAC
     dumpOut << endl << dumpCnt << " navaids loaded" << endl;
@@ -199,9 +250,6 @@ void Airac::loadWaypoints(const QString &path)
     quint64 dumpCnt = 0;
 #endif
 
-    m_waypoints.clear();
-    m_waypoints.reserve(230000);
-
     QTextStream in(&waypoints);
 
     while (!in.atEnd())
@@ -216,10 +264,7 @@ void Airac::loadWaypoints(const QString &path)
 #endif
 
         m_fixes.insert(wp->identifier(), wp);
-        m_waypoints.insert(wp->identifier(), wp);
     }
-
-    m_waypoints.squeeze();
 
 #ifdef DUMP_AIRAC
     dumpOut << endl << dumpCnt << " waypoints loaded" << endl;

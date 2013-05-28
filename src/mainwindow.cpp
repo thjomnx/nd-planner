@@ -64,9 +64,12 @@ void MainWindow::setRoute()
     QString rt2 = "EDDL DCT MODRU Z283 SUMAS UZ283 LNO UZ707 FAMEN UQ249 DISAK UQ237 LMG UN10 VELIN UN857 PPN ";
     rt2 += "UQ73 KORNO UA857 ABODA UN857 IBALU UA857 AMETA UN857 TOVRA UA857 VEDOD UN857 LZR UN871 GDV UN729 BIMBO DCT LPMA";
 
+//     QString rt3 = "CYYZ SID DEDKI ART COVAN KB03E MIILS DOTTY MALOT GISTI DEXEN LAMSO UL603 BASNO UL620 PAM UP62 TEBRO STAR EDDL";
+
     QList<QString> list;
     list.append(rt1);
     list.append(rt2);
+//     list.append(rt3);
 
     foreach (QString rt, list)
     {
