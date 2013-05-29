@@ -26,9 +26,6 @@ class Fix : public QObject
     Q_OBJECT
 
 public:
-    Fix();
-    Fix(const Fix &other);
-    explicit Fix(qreal latitude, qreal longitude);
     virtual ~Fix() { }
 
     static Fix* nearest(const Fix *mark, const QList<Fix*> &list);
@@ -38,6 +35,10 @@ public:
     qreal longitude() const { return m_longitude; }
 
 protected:
+    Fix();
+    Fix(const Fix &other);
+    explicit Fix(qreal latitude, qreal longitude);
+
     qreal m_latitude;
     qreal m_longitude;
 };
