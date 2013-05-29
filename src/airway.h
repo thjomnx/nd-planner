@@ -43,7 +43,6 @@ public:
 
     static Airway* parse(const QString &line);
     static Airway* find(const QString &identifier, const QMultiHash<QString, Airway*> &airways, Fix *start, Fix *end);
-    static bool exists(const QString &identifier, const QMultiHash<QString, Airway*> &airways);
 
     QString identifier() const { return m_identifier; }
     QList<Leg*> legs() const { return m_legs; }

@@ -101,7 +101,7 @@ Route* Route::parse(const QString &line, Airac *airac)
         isDirect = false;
 
         current = it.next();
-        isDirect = current == "DCT" || !Airway::exists(current, airways);
+        isDirect = current == "DCT" || !airways.contains(current);
 
         if (isDirect)
         {
