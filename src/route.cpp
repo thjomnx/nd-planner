@@ -55,7 +55,7 @@ Route* Route::parse(const QString &line, Airac *airac)
         tokenList.removeFirst();
     }
 
-    Fix *dfix = Fix::nearest(origin, fixes.values(tokenList.first()));
+    Fix *dfix = origin->nearest(fixes.values(tokenList.first()));
     Leg *leg = new Leg(origin, dfix, Airac::distance(origin, dfix));
     Segment *dep = new Segment(leg, type);
 
@@ -75,7 +75,7 @@ Route* Route::parse(const QString &line, Airac *airac)
         tokenList.removeLast();
     }
 
-    Fix *afix = Fix::nearest(final, fixes.values(tokenList.last()));
+    Fix *afix = final->nearest(fixes.values(tokenList.last()));
     leg = new Leg(afix, final, Airac::distance(afix, final));
     Segment *arr = new Segment(leg, type);
 
@@ -110,7 +110,7 @@ Route* Route::parse(const QString &line, Airac *airac)
 
             if (list.count() > 0)
             {
-                end = Fix::nearest(start, list);
+                end = start->nearest(list);
             }
             else
             {

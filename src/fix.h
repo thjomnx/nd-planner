@@ -28,11 +28,11 @@ class Fix : public QObject
 public:
     virtual ~Fix() { }
 
-    static Fix* nearest(const Fix *mark, const QList<Fix*> &list);
-
     virtual QString identifier() const = 0;
     qreal latitude() const { return m_latitude; }
     qreal longitude() const { return m_longitude; }
+
+    virtual Fix* nearest(const QList<Fix*> &list) const;
 
 protected:
     Fix();

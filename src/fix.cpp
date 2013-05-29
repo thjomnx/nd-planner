@@ -45,14 +45,14 @@ Fix::Fix(qreal latitude, qreal longitude)
     m_longitude = longitude;
 }
 
-Fix* Fix::nearest(const Fix *mark, const QList<Fix*> &list)
+Fix *Fix::nearest(const QList<Fix*> &list) const
 {
     Fix *result = 0;
     qreal distance = std::numeric_limits<qreal>::max();
 
     foreach (Fix *fix, list)
     {
-        qreal d = Airac::distance(mark, fix);
+        qreal d = Airac::distance(this, fix);
 
         if (d < distance)
         {
