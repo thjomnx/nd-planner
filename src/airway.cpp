@@ -90,7 +90,7 @@ bool Airway::exists(const QString &identifier, const QMultiHash<QString, Airway*
     return airways.values(identifier).count() > 0;
 }
 
-QList<Leg*> Airway::legs(const Fix *start, const Fix *end)
+QList<Leg*> Airway::legs(const Fix *start, const Fix *end) const
 {
     QList<Leg*> result;
     bool hit = false;

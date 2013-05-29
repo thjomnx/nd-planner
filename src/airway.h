@@ -47,7 +47,7 @@ public:
 
     QString identifier() const { return m_identifier; }
     QList<Leg*> legs() const { return m_legs; }
-    QList<Leg*> legs(const Fix *start, const Fix *end);
+    QList<Leg*> legs(const Fix *start, const Fix *end) const;
     Fix* entry() const;
     Fix* exit() const;
 
