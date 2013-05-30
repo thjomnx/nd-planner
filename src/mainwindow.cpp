@@ -64,37 +64,61 @@ void MainWindow::setRoute()
     QString rt2 = "EDDL DCT MODRU Z283 SUMAS UZ283 LNO UZ707 FAMEN UQ249 DISAK UQ237 LMG UN10 VELIN UN857 PPN ";
     rt2 += "UQ73 KORNO UA857 ABODA UN857 IBALU UA857 AMETA UN857 TOVRA UA857 VEDOD UN857 LZR UN871 GDV UN729 BIMBO DCT LPMA";
 
-//     QString rt3 = "CYYZ SID DEDKI ART COVAN KB03E MIILS DOTTY MALOT GISTI DEXEN LAMSO UL603 BASNO UL620 PAM UP62 TEBRO STAR EDDL";
+    QString rt3 = "CYYZ SID DEDKI ART COVAN KB03E MIILS DOTTY MALOT GISTI DEXEN LAMSO UL603 BASNO UL620 PAM UP62 TEBRO STAR EDDL";
 
     QList<QString> list;
     list.append(rt1);
     list.append(rt2);
-//     list.append(rt3);
+    list.append(rt3);
 
     foreach (QString rt, list)
     {
         Route *route = Route::parse(rt, m_airac);
 
-        foreach (Leg *leg, route->legs())
+        if (route != 0)
         {
-            qDebug() << leg->start()->identifier() << "-->" << leg->end()->identifier() << "(" << leg->distance() << "[nm] )";
-        }
+            qDebug() << "LEGS:";
 
-        qDebug() << endl;
-
-        foreach (Segment *seg, route->segments())
-        {
-            if (seg->type() == Segment::AirwayType)
+            foreach (Leg *leg, route->legs())
             {
-                qDebug() << seg->start()->identifier() << "-" << seg->airway()->identifier() << "->" << seg->end()->identifier() << "(" << seg->distance() << "[nm] )";
+                qDebug() << QString("%1 --> %2 [%3 nm]").arg(leg->start()->identifier())
+                                                        .arg(leg->end()->identifier())
+                                                        .arg(leg->distance());
             }
-            else
-            {
-                qDebug() << seg->start()->identifier() << "-->" << seg->end()->identifier() << "(" << seg->distance() << "[nm] )";
-            }
-        }
 
-        qDebug() << endl << "Overall route distance:" << route->distance() << "[nm]" << endl << endl;
+            qDebug() << endl << "SEGMENTS:";
+
+            foreach (Segment *seg, route->segments())
+            {
+                if (seg->type() == Segment::AirwayType)
+                {
+                    qDebug() << QString("%1 -%2-> %3 [%4 nm]").arg(seg->start()->identifier())
+                                                              .arg(seg->airway()->identifier())
+                                                              .arg(seg->end()->identifier())
+                                                              .arg(seg->distance());
+                }
+                else if (seg->type() == Segment::DepartureType)
+                {
+                    qDebug() << QString("%1 -SID-> %2 [%3 nm]").arg(seg->start()->identifier())
+                                                               .arg(seg->end()->identifier())
+                                                               .arg(seg->distance());
+                }
+                else if (seg->type() == Segment::ArrivalType)
+                {
+                    qDebug() << QString("%1 -STAR-> %2 [%3 nm]").arg(seg->start()->identifier())
+                                                                .arg(seg->end()->identifier())
+                                                                .arg(seg->distance());
+                }
+                else
+                {
+                    qDebug() << QString("%1 --> %2 [%3 nm]").arg(seg->start()->identifier())
+                                                            .arg(seg->end()->identifier())
+                                                            .arg(seg->distance());
+                }
+            }
+
+            qDebug() << endl << "Overall route distance:" << route->distance() << "nm" << endl << endl;
+        }
     }
 }
 
