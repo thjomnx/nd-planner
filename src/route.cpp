@@ -24,6 +24,10 @@
 #include "leg.h"
 #include "segment.h"
 
+#define ROUTE_DEPARTURE     "SID"
+#define ROUTE_ARRIVAL       "STAR"
+#define ROUTE_DIRECT        "DCT"
+
 Route::Route(QList<Segment*> segments)
     : QObject()
 {
@@ -54,7 +58,10 @@ Route* Route::parse(const QString &line, Airac *airac)
 
         if (buffer.count() == 2)
         {
-            if (buffer.last() == "SID" || buffer.last() == "STAR" || buffer.last() == "DCT" || airways.contains(buffer.last()))
+            QString first = buffer.at(0).toUpper();
+            QString last = buffer.at(1).toUpper();
+
+            if (last == ROUTE_DEPARTURE || last == ROUTE_ARRIVAL || last == ROUTE_DIRECT || airways.contains(last))
             {
                 buffer.append(it.next());
             }
@@ -62,23 +69,43 @@ Route* Route::parse(const QString &line, Airac *airac)
             {
                 if (start == 0)
                 {
-                    start = fixes.value(buffer.at(0));
+                    if (fixes.contains(first))
+                    {
+                        start = fixes.value(first);
+                    }
+                    else
+                    {
+                        qDebug() << "Fix not found:" << first;
+                        return 0;
+                    }
                 }
 
-                end = start->nearest(fixes.values(buffer.at(1)));
+                if (fixes.contains(last))
+                {
+                    end = start->nearest(fixes.values(last));
+                }
+                else
+                {
+                    qDebug() << "No fixes found:" << last;
+                    return 0;
+                }
 
                 Leg *leg = new Leg(start, end, Airac::distance(start, end));
                 Segment *segment = new Segment(leg, Segment::DirectType);
 
                 segments.append(segment);
 
-                buffer.removeFirst();
+                buffer.removeAt(0);
             }
         }
 
         if (buffer.count() == 3)
         {
-            if (!fixes.contains(buffer.last()))
+            QString first = buffer.at(0).toUpper();
+            QString middle = buffer.at(1).toUpper();
+            QString last = buffer.at(2).toUpper();
+
+            if (!fixes.contains(last))
             {
                 qDebug() << "Unable to parse route:" << line;
                 return 0;
@@ -87,51 +114,59 @@ Route* Route::parse(const QString &line, Airac *airac)
             {
                 if (start == 0)
                 {
-                    start = fixes.value(buffer.at(0));
+                    if (fixes.contains(first))
+                    {
+                        start = fixes.value(first);
+                    }
+                    else
+                    {
+                        qDebug() << "Fix not found:" << first;
+                        return 0;
+                    }
                 }
 
                 Segment *segment = 0;
 
-                if (buffer.at(1) == "SID" || buffer.at(1) == "STAR" || buffer.at(1) == "DCT")
+                if (middle == ROUTE_DEPARTURE || middle == ROUTE_ARRIVAL || middle == ROUTE_DIRECT)
                 {
-                    QList<Fix*> list = fixes.values(buffer.at(2));
+                    QList<Fix*> list = fixes.values(last);
 
                     if (list.count() == 0)
                     {
-                        qDebug() << "No fixes found:" << buffer.at(2);
+                        qDebug() << "No fixes found:" << last;
                         return 0;
                     }
 
                     end = start->nearest(list);
                     Leg *leg = new Leg(start, end, Airac::distance(start, end));
 
-                    if (buffer.at(1) == "SID")
+                    if (middle == ROUTE_DEPARTURE)
                     {
                         segment = new Segment(leg, Segment::DepartureType);
                     }
-                    else if (buffer.at(1) == "STAR")
+                    else if (middle == ROUTE_ARRIVAL)
                     {
                         segment = new Segment(leg, Segment::ArrivalType);
                     }
-                    else if (buffer.at(1) == "DCT")
+                    else if (middle == ROUTE_DIRECT)
                     {
                         segment = new Segment(leg, Segment::DirectType);
                     }
                 }
                 else
                 {
-                    QList<Fix*> list = fixes.values(buffer.at(2));
+                    QList<Fix*> list = fixes.values(last);
                     Airway *airway = 0;
 
                     if (list.count() == 0)
                     {
-                        qDebug() << "No fixes found:" << buffer.at(2);
+                        qDebug() << "No fixes found:" << last;
                         return 0;
                     }
 
                     foreach (Fix *fix, list)
                     {
-                        airway = Airway::find(buffer.at(1), airways, start, fix);
+                        airway = Airway::find(middle, airways, start, fix);
 
                         if (airway != 0)
                         {
@@ -142,7 +177,7 @@ Route* Route::parse(const QString &line, Airac *airac)
 
                     if (airway == 0)
                     {
-                        qDebug() << "Airway not found:" << buffer.at(1) << "[" << start->identifier() << "-->" << buffer.at(2) << "]";
+                        qDebug() << "Airway not found:" << middle << "[" << start->identifier() << "-->" << last << "]";
                         return 0;
                     }
 
@@ -158,8 +193,8 @@ Route* Route::parse(const QString &line, Airac *airac)
 
                 segments.append(segment);
 
-                buffer.removeFirst();
-                buffer.removeFirst();
+                buffer.removeAt(0);
+                buffer.removeAt(0);
             }
         }
 
