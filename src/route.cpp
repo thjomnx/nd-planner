@@ -86,7 +86,7 @@ Route* Route::parse(const QString &line, Airac *airac)
                 }
                 else
                 {
-                    qDebug() << "No fixes found:" << last;
+                    qDebug() << "Fix not found:" << last;
                     return 0;
                 }
 
@@ -133,7 +133,7 @@ Route* Route::parse(const QString &line, Airac *airac)
 
                     if (list.count() == 0)
                     {
-                        qDebug() << "No fixes found:" << last;
+                        qDebug() << "Fix not found:" << last;
                         return 0;
                     }
 
@@ -160,7 +160,7 @@ Route* Route::parse(const QString &line, Airac *airac)
 
                     if (list.count() == 0)
                     {
-                        qDebug() << "No fixes found:" << last;
+                        qDebug() << "Fix not found:" << last;
                         return 0;
                     }
 
@@ -187,7 +187,7 @@ Route* Route::parse(const QString &line, Airac *airac)
 
                 if (segment == 0)
                 {
-                    qDebug() << "Segment could not be created";
+                    qDebug() << "Unable to create segment";
                     return 0;
                 }
 
