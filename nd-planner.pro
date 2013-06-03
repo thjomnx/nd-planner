@@ -21,4 +21,5 @@
 
 # Sub projects
 TEMPLATE = subdirs
-SUBDIRS = ext/qmapcontrol src
+CONFIG += ordered
+SUBDIRS = ext/qmapcontrol src test
