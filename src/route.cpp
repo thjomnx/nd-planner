@@ -202,7 +202,7 @@ Route* Route::parse(const QString &line, Airac *airac)
         end = 0;
     }
 
-    return new Route(segments);
+    return segments.count() > 0 ? new Route(segments) : 0;
 }
 
 QList<Leg*> Route::legs() const
