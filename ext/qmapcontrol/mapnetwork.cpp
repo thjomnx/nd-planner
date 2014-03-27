@@ -50,7 +50,7 @@ namespace qmapcontrol
 
         QNetworkRequest request;
         request.setUrl(QUrl("http://" + host + url));
-        request.setRawHeader("User-Agent", "Mozilla");
+        request.setRawHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.21 (KHTML, like Gecko) rekonq/2.4.2 Safari/537.21");
         request.setAttribute(QNetworkRequest::User, id);
 
         qDebug() << "Starting request for " << request.url().toString();
